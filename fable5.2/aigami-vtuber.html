@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>藍髪の彼女 VTuberモデル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* layout: a full-height stage on the left, a fixed inspector dock on the right;
+     under 900px the dock drops below the stage. One committed theme: her own palette. */
+  --ink: #111537;        /* dock ground — her hair indigo, pushed darker */
+  --ink-up: #1b2054;     /* raised surfaces on the dock */
+  --paper: #eef1f8;      /* text on ink */
+  --mute: #9aa4d2;       /* secondary text */
+  --mustard: #dcc52d;    /* accent — the wrap top */
+  --dip: #e0484c;        /* the red hair tips — marks a hand-locked parameter */
+  --rule: rgba(238, 241, 248, .13);
+  --f-display: 'Zen Antique', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --f-body: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic UI', 'Noto Sans JP', sans-serif;
+  --f-mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--ink); color: var(--paper); font-family: var(--f-body); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--mustard); outline-offset: 2px; }
+
+.app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 396px; }
+
+/* ---------- stage ---------- */
+.stage { position: relative; min-height: 0; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+.stage.bg-ai { background: linear-gradient(180deg, #eef2f9 0%, #c9d3e9 100%); --on-stage: #1b2263; --halo: rgba(236, 240, 248, .95); }
+.stage.bg-kinari { background: linear-gradient(180deg, #f6f0e2 0%, #e2d6bb 100%); --on-stage: #4a3d1c; --halo: rgba(246, 240, 226, .95); }
+.stage.bg-yoru { background: radial-gradient(120% 90% at 50% 20%, #262d6e 0%, #0d1030 75%); --on-stage: #eef1fb; --halo: rgba(10, 13, 44, .98); }
+.stage.bg-green { background: #00b140; --on-stage: #063b18; --halo: rgba(0, 177, 64, .9); }
+.stage.bg-check { background: #f4f5f8 conic-gradient(#d9dce6 25%, transparent 0 50%, #d9dce6 0 75%, transparent 0) 0 0 / 28px 28px; --on-stage: #2b3050; --halo: rgba(244, 245, 248, .95); }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+.plate { position: absolute; left: 20px; top: 20px; margin: 0; writing-mode: vertical-rl; display: flex; gap: 8px; color: var(--on-stage); pointer-events: none; text-shadow: 0 0 3px var(--halo), 0 0 9px var(--halo), 0 0 16px var(--halo); }
+.plate b { font-family: var(--f-display); font-weight: 400; font-size: clamp(21px, 2.5vw, 33px); letter-spacing: .16em; line-height: 1.15; }
+.plate span { font-size: 11px; letter-spacing: .32em; opacity: .7; padding-top: 3px; }
+.views { position: absolute; right: 16px; top: 16px; display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(17, 21, 55, .82); }
+.views button { border: 0; background: none; padding: 5px 13px; border-radius: 999px; font-size: 12.5px; color: var(--mute); cursor: pointer; }
+.views button[aria-pressed="true"] { background: var(--mustard); color: #1a1c10; font-weight: 700; }
+.hint { position: absolute; left: 20px; bottom: 16px; margin: 0; max-width: 17em; font-size: 12px; line-height: 1.6; color: var(--on-stage); pointer-events: none; text-shadow: 0 0 3px var(--halo), 0 0 9px var(--halo); }
+
+/* ---------- dock ---------- */
+.dock { display: flex; flex-direction: column; min-height: 0; background: var(--ink); border-left: 1px solid var(--rule); }
+.dock-head { padding: 18px 20px 14px; display: flex; flex-direction: column; gap: 10px; }
+.kicker { margin: 0; font-size: 11px; letter-spacing: .16em; color: var(--mustard); }
+h1 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 23px; letter-spacing: .08em; line-height: 1.3; text-wrap: balance; }
+.stats { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.stats li { padding: 8px 0 7px; font-size: 11px; color: var(--mute); display: flex; flex-direction: column; }
+.stats li + li { padding-left: 12px; border-left: 1px solid var(--rule); }
+.stats b { font-family: var(--f-mono); font-weight: 500; font-size: 17px; color: var(--paper); font-variant-numeric: tabular-nums; }
+.tabs { display: flex; gap: 2px; padding: 0 20px; border-bottom: 1px solid var(--rule); }
+.tabs button { flex: 1; border: 0; background: none; padding: 9px 4px 10px; font-size: 13px; color: var(--mute); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs button[aria-selected="true"] { color: var(--paper); border-bottom-color: var(--mustard); font-weight: 700; }
+.panel { flex: 1; min-height: 0; overflow-y: auto; padding: 18px 20px 28px; display: flex; flex-direction: column; gap: 22px; scrollbar-width: thin; scrollbar-color: #3a4186 transparent; }
+.panel[hidden] { display: none; }
+.group { display: flex; flex-direction: column; gap: 10px; }
+.group > h2 { margin: 0; font-size: 12px; font-weight: 500; letter-spacing: .2em; color: var(--mute); display: flex; align-items: center; gap: 8px; }
+.group > h2::before { content: ''; width: 7px; height: 7px; background: var(--mustard); transform: rotate(45deg); flex: none; }
+.note { margin: 0; font-size: 12px; color: var(--mute); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { border: 1px solid var(--rule); background: var(--ink-up); padding: 6px 12px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: background .15s, border-color .15s; }
+.chips button:hover { border-color: var(--mute); }
+.chips button[aria-pressed="true"] { background: var(--mustard); border-color: var(--mustard); color: #1a1c10; font-weight: 700; }
+.chips.act button { border-radius: 8px; }
+.chips.act button:active { background: #2a3072; }
+
+.switches { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+.sw { display: flex; align-items: center; gap: 9px; font-size: 13px; cursor: pointer; padding: 3px 0; }
+.sw input { appearance: none; -webkit-appearance: none; flex: none; width: 30px; height: 17px; margin: 0; border-radius: 999px; background: #2b3170; position: relative; cursor: pointer; transition: background .15s; }
+.sw input::after { content: ''; position: absolute; left: 2px; top: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--mute); transition: transform .15s, background .15s; }
+.sw input:checked { background: var(--mustard); }
+.sw input:checked::after { transform: translateX(13px); background: #1a1c10; }
+
+/* sliders: the thumb is her diamond ear-drop */
+input[type="range"] { appearance: none; -webkit-appearance: none; width: 100%; height: 18px; margin: 0; background: none; cursor: pointer; }
+input[type="range"]::-webkit-slider-runnable-track { height: 2px; background: #3a4186; border-radius: 2px; }
+input[type="range"]::-moz-range-track { height: 2px; background: #3a4186; border-radius: 2px; }
+input[type="range"]::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 11px; height: 11px; margin-top: -4.5px; background: var(--mustard); border: 0; transform: rotate(45deg); }
+input[type="range"]::-moz-range-thumb { width: 10px; height: 10px; background: var(--mustard); border: 0; border-radius: 0; transform: rotate(45deg); }
+.wind { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; font-size: 13px; }
+
+.prow { display: grid; grid-template-columns: 118px minmax(0, 1fr) 44px 22px; gap: 8px; align-items: center; min-height: 30px; }
+.prow label { display: flex; flex-direction: column; line-height: 1.25; font-size: 12.5px; min-width: 0; }
+.prow label small { font-family: var(--f-mono); font-size: 9.5px; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prow output { font-family: var(--f-mono); font-size: 11.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--mute); }
+.prow .rs { width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--dip); font-size: 13px; line-height: 1; cursor: pointer; visibility: hidden; }
+.prow.locked .rs { visibility: visible; }
+.prow.locked output { color: var(--dip); }
+.prow.locked input[type="range"]::-webkit-slider-thumb { background: var(--dip); }
+.prow.locked input[type="range"]::-moz-range-thumb { background: var(--dip); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ghost { border: 1px solid var(--rule); background: none; padding: 5px 12px; border-radius: 8px; font-size: 12.5px; cursor: pointer; white-space: nowrap; }
+.ghost:hover { border-color: var(--mute); }
+
+/* ---------- camera tracking and stream mode (stand-alone build) ---------- */
+.primary { border: 0; background: var(--mustard); color: #1a1c10; font-weight: 700; padding: 9px 16px; border-radius: 8px; font-size: 13.5px; cursor: pointer; }
+.primary:hover { filter: brightness(1.07); }
+.camrow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.status { margin: 0; flex: 1 1 150px; min-width: 0; display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; color: var(--mute); }
+.status i { flex: none; width: 9px; height: 9px; margin-top: 5px; border-radius: 50%; background: #4a5190; }
+.status[data-state="tracking"] { color: var(--paper); }
+.status[data-state="tracking"] i { background: #5ad28f; }
+.status[data-state="loading"] i, .status[data-state="searching"] i { background: var(--mustard); animation: pulse .9s ease-in-out infinite alternate; }
+.status[data-state="error"] { color: #ffa9ab; }
+.status[data-state="error"] i { background: var(--dip); }
+@keyframes pulse { from { opacity: .3; } to { opacity: 1; } }
+.camopts { display: flex; align-items: center; justify-content: space-between; gap: 10px 14px; flex-wrap: wrap; }
+.field { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; color: var(--mute); width: 100%; }
+select { width: 100%; min-width: 0; background: var(--ink-up); border: 1px solid var(--rule); border-radius: 8px; padding: 5px 8px; font: inherit; font-size: 12.5px; color: var(--paper); }
+.silrow { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+.silrow > span { flex: none; width: 2.6em; color: var(--mute); }
+.tune { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; align-items: center; font-size: 13px; }
+.steps { margin: 0; padding-left: 1.5em; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.keys { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 13px; }
+.keys dt { font-family: var(--f-mono); color: var(--mustard); }
+.keys dd { margin: 0; }
+code { font-family: var(--f-mono); font-size: .92em; color: var(--mustard); overflow-wrap: anywhere; }
+.stage.bg-magenta { background: #ff00ff; --on-stage: #2a002a; --halo: rgba(255, 0, 255, .9); }
+.stage.bg-blue { background: #0047ff; --on-stage: #eef1fb; --halo: rgba(0, 40, 160, .95); }
+.stage.bg-none { background: transparent; --on-stage: #2b3050; --halo: rgba(255, 255, 255, .95); }
+html.clear, html.clear body { background: transparent; }
+body.stream .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+body.stream .dock, body.stream .plate, body.stream .views, body.stream .hint { display: none; }
+body.stream #cv { cursor: none; }
+#unstream { position: fixed; right: 0; top: 0; width: 56px; height: 56px; border: 0; background: none; opacity: 0; cursor: pointer; display: none; }
+body.stream #unstream { display: block; }
+#unstream:focus-visible { opacity: 1; }
+#toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); max-width: calc(100% - 32px); padding: 8px 16px; border-radius: 18px; background: rgba(17, 21, 55, .92); color: var(--paper); font-size: 13px; text-align: center; pointer-events: none; opacity: 0; transition: opacity .25s; }
+#toast.on { opacity: 1; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(300px, 56%) minmax(0, 1fr); }
+  .dock { border-left: 0; border-top: 1px solid var(--rule); }
+  .dock-head { padding: 12px 16px 10px; gap: 6px; }
+  .dock-head h1 { font-size: 18px; }
+  .stats { display: none; }
+  .tabs { padding: 0 16px; }
+  .panel { padding: 14px 16px 24px; }
+  .hint, .plate { display: none; }
+  .views { flex-direction: column; top: auto; bottom: 12px; right: 12px; border-radius: 18px; }
+  .views button { padding: 6px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="stage bg-ai" id="stage" aria-label="モデル表示">
+    <canvas id="cv" role="img" aria-label="藍色の髪の女性と、肩に乗る白い毛玉の生き物が動くモデル"></canvas>
+    <p class="plate"><b>藍髪の彼女と白い相棒</b><span>LIVE2D風 ベクターリグ</span></p>
+    <div class="views" role="group" aria-label="表示範囲">
+      <button type="button" data-view="full" aria-pressed="true">全身</button>
+      <button type="button" data-view="upper" aria-pressed="false">上半身</button>
+      <button type="button" data-view="face" aria-pressed="false">顔</button>
+    </div>
+    <p class="hint">ポインタを動かすと目で追います。頭や相棒をタップすると反応します。</p>
+    <button type="button" id="unstream" aria-label="操作パネルを表示する"></button>
+  </section>
+
+  <aside class="dock">
+    <header class="dock-head">
+      <p class="kicker">ラフから清書・パーツ分け・リグ付け</p>
+      <h1>藍髪の彼女と白い相棒</h1>
+      <ul class="stats">
+        <li><b id="st-parts">0</b>パーツ</li>
+        <li><b id="st-verts">0</b>頂点</li>
+        <li><b id="st-params">0</b>パラメータ</li>
+        <li><b id="st-phys">0</b>物理演算</li>
+      </ul>
+    </header>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="t-live" aria-controls="p-live" aria-selected="false">配信</button>
+      <button type="button" role="tab" id="t-play" aria-controls="p-play" aria-selected="true">操作</button>
+      <button type="button" role="tab" id="t-params" aria-controls="p-params" aria-selected="false">パラメータ</button>
+      <button type="button" role="tab" id="t-parts" aria-controls="p-parts" aria-selected="false">パーツ・表示</button>
+    </div>
+
+    <div class="panel" id="p-live" role="tabpanel" aria-labelledby="t-live" hidden>
+      <div class="group">
+        <h2>カメラで動かす</h2>
+        <div class="camrow">
+          <button type="button" class="primary" id="cam-toggle">カメラを開始</button>
+          <p class="status" id="cam-status" role="status" data-state="idle"><i></i><span>停止中</span></p>
+        </div>
+        <label class="field" for="cam-device"><span>使うカメラ</span><select id="cam-device"><option value="">既定のカメラ</option></select></label>
+        <div class="camopts">
+          <div id="camsw"></div>
+          <button type="button" class="ghost" id="cam-cal">正面を合わせる</button>
+        </div>
+        <div class="tune">
+          <label for="tu-head">頭の動き</label><input type="range" id="tu-head" min="0.5" max="2" step="0.05" value="1">
+          <label for="tu-blink">まばたきの効き</label><input type="range" id="tu-blink" min="-1" max="1" step="0.05" value="0">
+          <label for="tu-mouth">口の開き</label><input type="range" id="tu-mouth" min="0.5" max="2" step="0.05" value="1">
+        </div>
+        <p class="note">カメラの映像は画面に表示せず、このブラウザの中だけで処理します。外部にも送信しません。画面を見た姿勢で「正面を合わせる」を押すと、そこが基準になります。</p>
+      </div>
+      <div id="bg-slot"></div>
+      <div class="group">
+        <h2>お披露目（シルエット）</h2>
+        <div class="camopts">
+          <div id="silsw"></div>
+          <button type="button" class="primary" id="sil-reveal">お披露目する</button>
+        </div>
+        <div class="silrow"><span>色</span><div class="chips" id="sil-colors"></div></div>
+        <div class="silrow"><span>演出</span><div class="chips" id="sil-styles"></div></div>
+        <div class="tune"><label for="sil-dur" id="sil-dur-l">かける時間</label><input type="range" id="sil-dur" min="0.3" max="5" step="0.1" value="2"></div>
+        <p class="note">シルエットのままでもカメラの動きは反映されます。操作パネルを隠している間は、S キーでシルエットの切り替え、R キーでお披露目です。ページを読み込み直してもシルエットのまま始まります。</p>
+      </div>
+      <div class="group">
+        <h2>配信モード</h2>
+        <div><button type="button" class="primary" id="go-stream">操作パネルを隠す</button></div>
+        <p class="note">キャラクターだけの画面になります。H キーか Esc キー、または画面右上の角のクリックで戻ります。</p>
+      </div>
+      <div class="group">
+        <h2>OBS に取り込む</h2>
+        <ol class="steps">
+          <li>このページを Chrome か Edge で開き、カメラを開始する</li>
+          <li>背景を「緑」にして、操作パネルを隠す</li>
+          <li>OBS のソースに「ウィンドウキャプチャ」を追加し、このウィンドウを選ぶ</li>
+          <li>そのソースのフィルタに「クロマキー」を追加する</li>
+        </ol>
+        <p class="note">このウィンドウを最小化したり、ほかのウィンドウで完全に隠したりすると、ブラウザが描画を止めます。別のモニターに置くか、一部が見える位置に置いてください。</p>
+        <p class="note">OBS のブラウザソースに直接読み込むこともできます（背景は自動で透過になり、カメラも自動で始まります）。その場合は OBS を <code>--enable-media-stream</code> 付きで起動し、「ローカルファイル」は使わずに URL 欄へ <code>file:///…/aigami-vtuber.html</code> と入力してください。</p>
+      </div>
+      <div class="group">
+        <h2>キー操作</h2>
+        <dl class="keys"><dt>1〜7</dt><dd>表情の切り替え</dd><dt>H</dt><dd>操作パネルを隠す・戻す</dd><dt>V</dt><dd>全身・上半身・顔の切り替え</dd><dt>C</dt><dd>正面を合わせる</dd><dt>M</dt><dd>鏡の向きを切り替える</dd><dt>S</dt><dd>シルエット表示の切り替え</dd><dt>R</dt><dd>お披露目（シルエットから色付きへ）</dd></dl>
+      </div>
+    </div>
+
+    <div class="panel" id="p-play" role="tabpanel" aria-labelledby="t-play">
+      <div class="group">
+        <h2>表情</h2>
+        <div class="chips" id="exprs"></div>
+      </div>
+      <div class="group">
+        <h2>モーション</h2>
+        <div class="chips act" id="motions"></div>
+      </div>
+      <div class="group">
+        <h2>自動で動かすもの</h2>
+        <div class="switches" id="autos"></div>
+        <div class="wind"><label for="wind">風の強さ</label><input type="range" id="wind" min="0" max="2" step="0.05" value="0.6"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-params" role="tabpanel" aria-labelledby="t-params" hidden>
+      <div class="bar">
+        <p class="note">スライダーを動かすと、そのパラメータは手動で固定されます。</p>
+        <button type="button" class="ghost" id="unlock">すべて自動に戻す</button>
+      </div>
+      <div id="plist" style="display:flex;flex-direction:column;gap:20px"></div>
+    </div>
+
+    <div class="panel" id="p-parts" role="tabpanel" aria-labelledby="t-parts" hidden>
+      <div class="group">
+        <h2>パーツの表示</h2>
+        <div class="switches" id="parts"></div>
+        <p class="note">前髪を消すと、その下に描いてある額や眉まで確認できます。</p>
+      </div>
+      <div class="group">
+        <h2>リグ</h2>
+        <div class="switches" id="rigsw"></div>
+      </div>
+      <div class="group">
+        <h2>背景</h2>
+        <div class="chips" id="bgs"></div>
+        <p class="note" id="bg-note">「緑」は配信ソフトのクロマキー合成用です。</p>
+      </div>
+    </div>
+  </aside>
+</div>
+<div id="toast" role="status"></div>
+<script>
+window.BUILD = 'vtuber';
+</script>
+<script>
+/* =====================================================================
+ * engine.js — vector puppet rig (Live2D-style)
+ *   parts (vector paths) -> parameters -> deformers -> physics -> canvas
+ * Model space: 1517 x 2409 (same coordinates as the original rough).
+ * Naming: R / L are the CHARACTER's right / left (R is on screen-left).
+ * ===================================================================== */
+(function (G) {
+'use strict';
+const DEG = Math.PI / 180, TAU = Math.PI * 2;
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const lerp = (a, b, t) => a + (b - a) * t;
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const T2 = [0, 0], T3 = [0, 0];
+
+/* ---------- rig constants ---------- */
+const K = {
+  W: 1517, H: 2409,
+  HC: [758, 205], HR: 185,        // head sphere (centre, radius)
+  NP: [758, 392],                 // neck pivot
+  HIP: [765, 1005], CX: 760,      // hip pivot, body centre line
+  arm: {
+    R: { S: [596, 522], E: [408, 846], W: [238, 1080], sgn: 1 },
+    L: { S: [922, 522], E: [1108, 868], W: [1280, 1080], sgn: -1 },
+  },
+  CREF: [600, 505],               // creature head attach point (her right shoulder)
+  CPIV: [505, 560],               // creature head pivot
+  FREF: [760, 470],               // creature body attach point (shoulder line)
+};
+
+/* ---------- parameters ---------- */
+// [id, label, min, max, default, group]
+const PARAMS = [
+  ['AngleX', '角度 X', -30, 30, 0, '顔'], ['AngleY', '角度 Y', -30, 30, 0, '顔'], ['AngleZ', '角度 Z', -30, 30, 0, '顔'],
+  ['Cheek', '照れ', 0, 1, 0, '顔'],
+  ['EyeLOpen', '左目 開閉', 0, 1.3, 1, '目'], ['EyeROpen', '右目 開閉', 0, 1.3, 1, '目'], ['EyeSmile', '目 笑顔', 0, 1, 0, '目'],
+  ['EyeBallX', '目玉 X', -1, 1, 0, '目'], ['EyeBallY', '目玉 Y', -1, 1, 0, '目'],
+  ['BrowLY', '左眉 上下', -1, 1, 0, '眉'], ['BrowRY', '右眉 上下', -1, 1, 0, '眉'], ['BrowAngle', '眉 角度', -1, 1, 0, '眉'],
+  ['MouthForm', '口 変形', -1, 1, 0.4, '口'], ['MouthOpen', '口 開閉', 0, 1, 0, '口'],
+  ['BodyX', '体の回転 X', -10, 10, 0, '体'], ['BodyY', '体の回転 Y', -10, 10, 0, '体'], ['BodyZ', '体の回転 Z', -10, 10, 0, '体'],
+  ['Breath', '呼吸', 0, 1, 0, '体'],
+  ['ArmR', '右腕', -25, 25, 0, '腕'], ['ElbowR', '右ひじ', -35, 35, 0, '腕'],
+  ['ArmL', '左腕', -25, 25, 0, '腕'], ['ElbowL', '左ひじ', -35, 35, 0, '腕'],
+  ['HairFront', '前髪', -1, 1, 0, '揺れ'], ['HairSideR', '横髪 右', -1, 1, 0, '揺れ'], ['HairSideL', '横髪 左', -1, 1, 0, '揺れ'],
+  ['HairTail', '毛先（鈴の下）', -1, 1, 0, '揺れ'], ['HairBack', '後ろ髪', -1, 1, 0, '揺れ'], ['Earring', '耳飾り', -1, 1, 0, '揺れ'],
+  ['Bow', '胸元の紐', -1, 1, 0, '揺れ'], ['Skirt1', '腰布', -1, 1, 0, '揺れ'], ['Skirt2', '腰布 先', -1, 1, 0, '揺れ'],
+  ['BootRibbon', 'ブーツの紐', -1, 1, 0, '揺れ'],
+  ['CrLookX', '視線 X', -1, 1, 0, '相棒'], ['CrLookY', '視線 Y', -1, 1, 0, '相棒'], ['CrTilt', '首かしげ', -1, 1, 0, '相棒'],
+  ['CrEyeOpen', '目 開閉', 0, 1, 1, '相棒'], ['CrMouth', '口 開閉', 0, 1, 0.55, '相棒'], ['CrPuff', 'もふもふ', 0, 1, 0, '相棒'],
+  ['CrFluff', '毛並み 揺れ', -1, 1, 0, '相棒'], ['CrTail', 'しっぽ', -1, 1, 0, '相棒'],
+];
+const RANGE = {};
+for (const p of PARAMS) RANGE[p[0]] = Math.max(Math.abs(p[2]), Math.abs(p[3]));
+
+/* ---------- physics: spring-lag pendulums ---------- */
+// out: driven parameter / in: weighted normalised inputs / chain: follows another spring
+// f: frequency (Hz) / z: damping ratio / g: gain / st: static (gravity) terms / wind: idle sway
+const PHYS = [
+  { out: 'HairFront', in: { AngleX: .5, AngleZ: .8, BodyX: .3, BodyZ: .5 }, f: 2.3, z: .34, g: 1.5, st: { AngleZ: .3 }, wind: .05 },
+  { out: 'HairSideR', in: { AngleX: .6, AngleZ: 1, BodyX: .4, BodyZ: .6 }, f: 1.9, z: .3, g: 1.6, st: { AngleZ: .4 }, wind: .06 },
+  { out: 'HairSideL', in: { AngleX: .7, AngleZ: 1, BodyX: .5, BodyZ: .7 }, f: 1.45, z: .24, g: 1.45, st: { AngleZ: .7 }, wind: .08 },
+  { out: 'HairTail', chain: 2, f: 1.9, z: .22, g: 1.6, st: { AngleZ: .3 }, wind: .12 },
+  { out: 'HairBack', in: { AngleX: .5, AngleZ: 1, BodyX: .4, BodyZ: .6 }, f: 1.7, z: .3, g: 1.5, st: { AngleZ: .35 }, wind: .05 },
+  { out: 'Earring', in: { AngleX: .8, AngleZ: 1, BodyX: .5, BodyZ: .7 }, f: 2.5, z: .15, g: 1.7, st: { AngleZ: .9 }, wind: .05 },
+  { out: 'Bow', in: { BodyX: 1, BodyZ: .8, Breath: .15 }, f: 2.1, z: .22, g: 1.8, st: { BodyZ: .4 }, wind: .1 },
+  { out: 'Skirt1', in: { BodyX: .9, BodyZ: 1, AngleZ: .15 }, f: 0.85, z: .24, g: 1.5, st: { BodyZ: .25 }, wind: .14 },
+  { out: 'Skirt2', chain: 7, f: 1.25, z: .2, g: 2.2, wind: .16 },
+  { out: 'BootRibbon', in: { BodyX: .6, BodyZ: .6 }, f: 1.5, z: .2, g: 1.6, wind: .16 },
+  { out: 'CrFluff', in: { BodyX: .8, BodyZ: 1, AngleZ: .3 }, f: 1.1, z: .28, g: 1.6, st: { BodyZ: .3 }, wind: .12 },
+  { out: 'CrTail', in: { BodyX: .7, BodyZ: .9, ArmL: .6, ElbowL: .5 }, f: 1.2, z: .2, g: 1.8, wind: .3 },
+];
+function Phys() { this.s = PHYS.map(() => ({ y: 0, v: 0, u: 0 })); this.t = 0; }
+Phys.prototype.step = function (P, dt, wind) {
+  dt = Math.min(dt, 0.1);
+  const sub = Math.max(1, Math.ceil(dt * 120)), h = dt / sub;
+  for (let k = 0; k < sub; k++) {
+    for (let i = 0; i < PHYS.length; i++) {
+      const sp = PHYS[i], st = this.s[i];
+      let u = 0;
+      if (sp.chain != null) u = this.s[sp.chain].y;
+      else for (const key in sp.in) u += P[key] / RANGE[key] * sp.in[key];
+      const w = TAU * sp.f, acc = w * w * (u - st.y) - 2 * sp.z * w * st.v;
+      st.v += acc * h; st.y += st.v * h; st.u = u;
+    }
+  }
+  this.t += dt;
+  for (let i = 0; i < PHYS.length; i++) {
+    const sp = PHYS[i], st = this.s[i];
+    let o = (st.y - st.u) * sp.g;
+    if (sp.st) for (const key in sp.st) o += P[key] / RANGE[key] * sp.st[key];
+    const t = this.t;
+    o += wind * sp.wind * (Math.sin(t * 0.83 + i * 1.3) * 0.55 + Math.sin(t * 1.71 + i * 2.1) * 0.3 + Math.sin(t * 2.9 + i * 0.7) * 0.15);
+    P[sp.out] = clamp(o, -1, 1);
+  }
+};
+Phys.prototype.reset = function () { for (const s of this.s) { s.y = s.u; s.v = 0; } };
+
+/* ---------- shapes ---------- */
+function parse(str) {
+  const tok = str.trim().split(/\s+/), n = tok.length;
+  const p = new Float32Array(n * 2), cor = new Uint8Array(n), ns = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = tok[i]; let j = 0;
+    while (t[j] === '!' || t[j] === '~') { if (t[j] === '!') cor[i] = 1; else ns[i] = 1; j++; }
+    const c = t.slice(j).split(',');
+    p[i * 2] = +c[0]; p[i * 2 + 1] = +c[1];
+    if (c.length !== 2 || isNaN(p[i * 2]) || isNaN(p[i * 2 + 1])) throw new Error('bad point "' + tok[i] + '" in: ' + str.slice(0, 60));
+  }
+  return { p, cor, ns, n };
+}
+function mk(o) {
+  const src = typeof o.p === 'string' ? parse(o.p) : o.p;
+  const n = src.n, f = o.f, e = f && f.lg ? 2 : f && f.rg ? 1 : 0;
+  const s = Object.assign({}, o);
+  s.n = n; s.e = e;
+  s.p = new Float32Array((n + e) * 2); s.p.set(src.p.subarray(0, n * 2));
+  if (e === 2) { s.p[n * 2] = f.lg[0]; s.p[n * 2 + 1] = f.lg[1]; s.p[n * 2 + 2] = f.lg[2]; s.p[n * 2 + 3] = f.lg[3]; }
+  if (e === 1) { s.p[n * 2] = f.rg[0]; s.p[n * 2 + 1] = f.rg[1]; }
+  s.r = new Float32Array(s.p.length); s.q = new Float32Array(s.p.length);
+  s.cor = src.cor || new Uint8Array(n); s.ns = src.ns || new Uint8Array(n);
+  s.closed = !o.open;
+  s.hasNS = false; for (let i = 0; i < n; i++) if (s.ns[i]) s.hasNS = true;
+  if (src.wig) s.wig = src.wig;
+  s.h = new Float32Array(n * 4);
+  return s;
+}
+
+/* ---------- path building ---------- */
+function handles(s) {
+  const q = s.q, n = s.n, h = s.h, k = s.k || 0.335, closed = s.closed, cor = s.cor;
+  for (let i = 0; i < n; i++) {
+    const i4 = i * 4;
+    if (cor[i] || (!closed && (i === 0 || i === n - 1))) { h[i4] = h[i4 + 1] = h[i4 + 2] = h[i4 + 3] = 0; continue; }
+    const a = ((i - 1 + n) % n) * 2, b = ((i + 1) % n) * 2, c = i * 2;
+    let tx = q[b] - q[a], ty = q[b + 1] - q[a + 1];
+    const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+    const d1 = Math.hypot(q[c] - q[a], q[c + 1] - q[a + 1]) * k, d2 = Math.hypot(q[b] - q[c], q[b + 1] - q[c + 1]) * k;
+    h[i4] = -tx * d1; h[i4 + 1] = -ty * d1; h[i4 + 2] = tx * d2; h[i4 + 3] = ty * d2;
+  }
+  return h;
+}
+function trace(ctx, s, append) {
+  const q = s.q, n = s.n, h = handles(s), m = s.closed ? n : n - 1;
+  if (!append) ctx.beginPath();
+  ctx.moveTo(q[0], q[1]);
+  for (let i = 0; i < m; i++) {
+    const j = (i + 1) % n, a = i * 2, b = j * 2;
+    ctx.bezierCurveTo(q[a] + h[i * 4 + 2], q[a + 1] + h[i * 4 + 3], q[b] + h[j * 4], q[b + 1] + h[j * 4 + 1], q[b], q[b + 1]);
+  }
+  if (s.closed) ctx.closePath();
+}
+function traceStroke(ctx, s) {
+  if (!s.hasNS) { trace(ctx, s); return; }
+  const q = s.q, n = s.n, h = handles(s), m = s.closed ? n : n - 1, ns = s.ns;
+  ctx.beginPath();
+  let pen = false;
+  for (let i = 0; i < m; i++) {
+    if (ns[i]) { pen = false; continue; }
+    const j = (i + 1) % n, a = i * 2, b = j * 2;
+    if (!pen) { ctx.moveTo(q[a], q[a + 1]); pen = true; }
+    ctx.bezierCurveTo(q[a] + h[i * 4 + 2], q[a + 1] + h[i * 4 + 3], q[b] + h[j * 4], q[b + 1] + h[j * 4 + 1], q[b], q[b + 1]);
+  }
+}
+// tapered open line drawn as a filled lens
+const TB = new Float32Array(8192), TL = new Float32Array(4096);
+function taper(ctx, s) {
+  const q = s.q, n = s.n, h = handles(s), N = 6;
+  let c = 0;
+  for (let i = 0; i < n - 1; i++) {
+    const a = i * 2, b = a + 2;
+    const x0 = q[a], y0 = q[a + 1], x3 = q[b], y3 = q[b + 1];
+    const x1 = x0 + h[i * 4 + 2], y1 = y0 + h[i * 4 + 3], x2 = x3 + h[(i + 1) * 4], y2 = y3 + h[(i + 1) * 4 + 1];
+    const last = i === n - 2 ? N : N - 1;
+    for (let k = 0; k <= last; k++) {
+      const t = k / N, u = 1 - t, b0 = u * u * u, b1 = 3 * u * u * t, b2 = 3 * u * t * t, b3 = t * t * t;
+      TB[c * 2] = b0 * x0 + b1 * x1 + b2 * x2 + b3 * x3; TB[c * 2 + 1] = b0 * y0 + b1 * y1 + b2 * y2 + b3 * y3; c++;
+    }
+  }
+  TL[0] = 0;
+  for (let i = 1; i < c; i++) TL[i] = TL[i - 1] + Math.hypot(TB[i * 2] - TB[i * 2 - 2], TB[i * 2 + 1] - TB[i * 2 - 1]);
+  const tot = TL[c - 1] || 1, W = (s.w || 2.4) * 0.5, tp = s.tp, ti = tp[0], to = tp[1];
+  ctx.beginPath();
+  for (let pass = 0; pass < 2; pass++) {
+    for (let k = 0; k < c; k++) {
+      const i = pass ? c - 1 - k : k;
+      const a = Math.max(0, i - 1), b = Math.min(c - 1, i + 1);
+      let tx = TB[b * 2] - TB[a * 2], ty = TB[b * 2 + 1] - TB[a * 2 + 1];
+      const l = Math.hypot(tx, ty) || 1; tx /= l; ty /= l;
+      const t = TL[i] / tot;
+      let wd = W;
+      if (ti > 0 && t < ti) wd *= Math.pow(t / ti, 0.75);
+      if (to > 0 && 1 - t < to) wd *= Math.pow((1 - t) / to, 0.75);
+      wd = Math.max(wd, 0.15);
+      const sgn = pass ? -1 : 1, x = TB[i * 2] - ty * wd * sgn, y = TB[i * 2 + 1] + tx * wd * sgn;
+      if (!pass && k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+  }
+  ctx.closePath(); ctx.fill();
+}
+function fillStyle(ctx, s) {
+  const f = s.f;
+  if (typeof f === 'string') return f;
+  const q = s.q, m = s.n * 2;
+  let g;
+  if (f.lg) g = ctx.createLinearGradient(q[m], q[m + 1], q[m + 2], q[m + 3]);
+  else g = ctx.createRadialGradient(q[m], q[m + 1], f.rg[2], q[m], q[m + 1], f.rg[3]);
+  for (const st of f.st) g.addColorStop(st[0], st[1]);
+  return g;
+}
+function drawShape(ctx, s, F) {
+  let a = s.a == null ? 1 : s.a;
+  if (s.af) a *= s.af(F);
+  if (a <= 0.004) return;
+  if (a < 1) ctx.globalAlpha = a;
+  if (s.tp) { ctx.fillStyle = s.s; taper(ctx, s); }
+  else {
+    if (s.f) { trace(ctx, s); ctx.fillStyle = fillStyle(ctx, s); ctx.fill(); }
+    if (s.s) {
+      traceStroke(ctx, s); ctx.strokeStyle = s.s; ctx.lineWidth = s.w || 3; ctx.stroke();
+      if (s.s2) { ctx.strokeStyle = s.s2; ctx.lineWidth = s.w2; ctx.stroke(); }
+    }
+  }
+  if (a < 1) ctx.globalAlpha = 1;
+}
+function drawPart(ctx, part, F, M) {
+  if (part.hidden) return;
+  if (part.vis && !part.vis(F)) return;
+  let saved = false;
+  if (part.clipBy) { const c = M.byId[part.clipBy]; ctx.save(); saved = true; trace(ctx, c.base); ctx.clip(); }
+  if (part.holeBy) {
+    const c = M.byId[part.holeBy]; if (!saved) { ctx.save(); saved = true; }
+    ctx.beginPath(); ctx.rect(-3000, -3000, 9000, 9000); trace(ctx, c.base, true); ctx.clip('evenodd');
+  }
+  const b = part.base;
+  if (b) {
+    let a = b.a == null ? 1 : b.a; if (b.af) a *= b.af(F);
+    if (a > 0.004) {
+      if (a < 1) ctx.globalAlpha = a;
+      if (b.f) { trace(ctx, b); ctx.fillStyle = fillStyle(ctx, b); ctx.fill(); }
+      if (a < 1) ctx.globalAlpha = 1;
+      if (part.inner.length) {
+        ctx.save(); trace(ctx, b); ctx.clip();
+        for (const s of part.inner) drawShape(ctx, s, F);
+        ctx.restore();
+      }
+      if (b.s) {
+        if (a < 1) ctx.globalAlpha = a;
+        traceStroke(ctx, b); ctx.strokeStyle = b.s; ctx.lineWidth = b.w || 3; ctx.stroke();
+        if (a < 1) ctx.globalAlpha = 1;
+      }
+    }
+  }
+  for (const s of part.over) drawShape(ctx, s, F);
+  if (saved) ctx.restore();
+}
+
+/* ---------- deformers ---------- */
+function bodyXf(x, y, z, F, o) {
+  const B = F.B;
+  const w = sstep(K.HIP[1], 600, y);
+  const a = B.lean * w, ca = Math.cos(a), sa = Math.sin(a);
+  const dx = x - K.HIP[0], dy = y - K.HIP[1];
+  let X = K.HIP[0] + dx * ca - dy * sa, Y = K.HIP[1] + dx * sa + dy * ca;
+  const wy = sstep(K.HIP[1] + 20, 680, y);
+  const u = (x - K.CX) / 230, cyl = u * u < 1 ? Math.sqrt(1 - u * u) : 0;
+  X += ((z + 60 * cyl) * B.sy + B.shift) * wy;
+  Y += B.bow * w - B.breath * 5 * sstep(880, 660, y);
+  X += (x - K.CX) * B.breath * 0.012 * sstep(790, 680, y) * sstep(430, 540, y);
+  o[0] = X; o[1] = Y;
+  return a;
+}
+function headXf(x, y, zo, zm, F, o) {
+  const H = F.H, R = K.HR;
+  const u = (x - K.HC[0]) / R, v = (y - K.HC[1]) / R;
+  let z;
+  if (zm === 1) z = zo;                                   // flat
+  else if (zm === 2) z = -zo * sstep(-0.8, 0.2, v);       // back hair: fades to 0 at the crown
+  else { const vv = v > 0 ? v * 0.5 : v, d = 1 - u * u - vv * vv; z = zo + (d > 0 ? Math.sqrt(d) : 0); }
+  const u1 = u * H.cy + z * H.sy, z1 = -u * H.sy + z * H.cy;
+  const v1 = v * H.cp - z1 * H.sp;
+  const X = K.HC[0] + u1 * R - K.NP[0], Y = K.HC[1] + v1 * R - K.NP[1];
+  o[0] = K.NP[0] + X * H.cr - Y * H.sr + H.ox;
+  o[1] = K.NP[1] + X * H.sr + Y * H.cr + H.oy;
+}
+// 2D affine [a,b,c,d,e,f]: x' = a x + c y + e ; y' = b x + d y + f
+function rotAbout(px, py, ang, tx, ty) {
+  const c = Math.cos(ang), s = Math.sin(ang);
+  return [c, s, -s, c, tx - (c * px - s * py), ty - (s * px + c * py)];
+}
+function mul(A, B) {
+  return [A[0] * B[0] + A[2] * B[1], A[1] * B[0] + A[3] * B[1], A[0] * B[2] + A[2] * B[3], A[1] * B[2] + A[3] * B[3],
+    A[0] * B[4] + A[2] * B[5] + A[4], A[1] * B[4] + A[3] * B[5] + A[5]];
+}
+function armFrame(F, side) {
+  const A = K.arm[side], P = F.P;
+  const lean = bodyXf(A.S[0], A.S[1], 0, F, T2);
+  const ms = rotAbout(A.S[0], A.S[1], lean + A.sgn * P['Arm' + side] * DEG, T2[0], T2[1]);
+  const me = mul(ms, rotAbout(A.E[0], A.E[1], A.sgn * P['Elbow' + side] * DEG, A.E[0], A.E[1]));
+  return { ms, me };
+}
+function armW(s, side) {
+  const A = K.arm[side], m = s.n + s.e, w = new Float32Array(m);
+  let dx = A.W[0] - A.E[0], dy = A.W[1] - A.E[1]; const l = Math.hypot(dx, dy); dx /= l; dy /= l;
+  for (let i = 0; i < m; i++) w[i] = sstep(-36, 36, (s.p[i * 2] - A.E[0]) * dx + (s.p[i * 2 + 1] - A.E[1]) * dy);
+  return w;
+}
+function attFrame(F, ref) {       // rigid frame riding on the body at ref
+  const a = bodyXf(ref[0], ref[1], ref[2] || 0, F, T2);
+  return rotAbout(ref[0], ref[1], a, T2[0], T2[1]);
+}
+
+function makeFrame(P, t) {
+  const F = { P, t };
+  const B = F.B = {};
+  B.lean = P.BodyZ * 0.75 * DEG;
+  B.sy = Math.sin(P.BodyX * 1.15 * DEG);
+  B.shift = P.BodyX * 0.9;
+  B.breath = P.Breath;
+  B.bow = P.BodyY * 1.3;
+  const H = F.H = {};
+  const yaw = P.AngleX * 0.5 * DEG, pit = P.AngleY * 0.42 * DEG;
+  H.sy = Math.sin(yaw); H.cy = Math.cos(yaw); H.sp = Math.sin(pit); H.cp = Math.cos(pit);
+  const lean = bodyXf(K.NP[0], K.NP[1], 0, F, T2);
+  const roll = P.AngleZ * 0.6 * DEG + lean;
+  H.roll = roll; H.sr = Math.sin(roll); H.cr = Math.cos(roll);
+  H.ox = T2[0] - K.NP[0] + P.AngleX * 0.2; H.oy = T2[1] - K.NP[1] - P.AngleY * 0.12;
+  F.armR = armFrame(F, 'R'); F.armL = armFrame(F, 'L');
+  F.mCrea = attFrame(F, K.CREF); F.mFluff = attFrame(F, K.FREF);
+  // creature head: local tilt + bob, then ride on the shoulder
+  const ct = (P.CrTilt * 9 + Math.sin(t * 1.3) * 0.6) * DEG, puff = 1 + P.CrPuff * 0.06;
+  const loc = rotAbout(K.CPIV[0], K.CPIV[1], ct, K.CPIV[0], K.CPIV[1] - P.CrPuff * 5 + Math.sin(t * 1.9) * 0.8);
+  // scale about pivot
+  const sc = [puff, 0, 0, puff, K.CPIV[0] * (1 - puff), K.CPIV[1] * (1 - puff)];
+  F.mCreaHead = mul(F.mCrea, mul(loc, sc));
+  F.mouth = null;
+  return F;
+}
+
+const GROUP = {
+  none(s) { s.q.set(s.r); },
+  body(s, part, F) {
+    const r = s.r, q = s.q, m = s.n + s.e, z = s.z != null ? s.z : (part.z || 0);
+    for (let i = 0; i < m; i++) { bodyXf(r[i * 2], r[i * 2 + 1], z, F, T2); q[i * 2] = T2[0]; q[i * 2 + 1] = T2[1]; }
+  },
+  head(s, part, F) {
+    const r = s.r, q = s.q, m = s.n + s.e, z = s.z != null ? s.z : (part.z || 0), zm = s.zm != null ? s.zm : (part.zm || 0);
+    for (let i = 0; i < m; i++) { headXf(r[i * 2], r[i * 2 + 1], z, zm, F, T2); q[i * 2] = T2[0]; q[i * 2 + 1] = T2[1]; }
+  },
+  neck(s, part, F) {       // blends body (bottom) -> head roll (top)
+    const r = s.r, q = s.q, m = s.n + s.e, H = F.H, z = part.z || 0;
+    for (let i = 0; i < m; i++) {
+      const x = r[i * 2], y = r[i * 2 + 1];
+      bodyXf(x, y, z, F, T2);
+      const w = sstep(462, 388, y);
+      if (w > 0) {
+        const dx = x - K.NP[0], dy = y - K.NP[1];
+        const hx = K.NP[0] + dx * H.cr - dy * H.sr + H.ox, hy = K.NP[1] + dx * H.sr + dy * H.cr + H.oy;
+        T2[0] += (hx - T2[0]) * w; T2[1] += (hy - T2[1]) * w;
+      }
+      q[i * 2] = T2[0]; q[i * 2 + 1] = T2[1];
+    }
+  },
+  armR(s, part, F) { arm(s, F.armR, 'R'); },
+  armL(s, part, F) { arm(s, F.armL, 'L'); },
+  att(s, part, F) { aff(s, part.fluff ? F.mFluff : F.mCrea); },
+  creaHead(s, part, F) {
+    const r = s.r, m = s.n + s.e, P = F.P, z = s.z != null ? s.z : (part.z || 0);
+    if (z) { const dx = P.CrLookX * 11 * z, dy = -P.CrLookY * 8 * z; for (let i = 0; i < m; i++) { r[i * 2] += dx; r[i * 2 + 1] += dy; } }
+    aff(s, F.mCreaHead);
+  },
+  tail(s, part, F) {       // top rides on the fluff, the coil rides on her left forearm
+    if (!s.wE) s.wE = armW(s, 'L');
+    const r = s.r, q = s.q, m = s.n + s.e, A = F.mFluff, S = F.armL.ms, E = F.armL.me, wE = s.wE;
+    for (let i = 0; i < m; i++) {
+      const x = r[i * 2], y = r[i * 2 + 1], w = sstep(690, 800, s.p[i * 2 + 1]), e = wE[i];
+      const ax = A[0] * x + A[2] * y + A[4], ay = A[1] * x + A[3] * y + A[5];
+      let bx = S[0] * x + S[2] * y + S[4], by = S[1] * x + S[3] * y + S[5];
+      if (e > 0) { bx += (E[0] * x + E[2] * y + E[4] - bx) * e; by += (E[1] * x + E[3] * y + E[5] - by) * e; }
+      q[i * 2] = ax + (bx - ax) * w; q[i * 2 + 1] = ay + (by - ay) * w;
+    }
+  },
+};
+function aff(s, M) {
+  const r = s.r, q = s.q, m = s.n + s.e;
+  for (let i = 0; i < m; i++) { const x = r[i * 2], y = r[i * 2 + 1]; q[i * 2] = M[0] * x + M[2] * y + M[4]; q[i * 2 + 1] = M[1] * x + M[3] * y + M[5]; }
+}
+function arm(s, fr, side) {
+  if (!s.wE) s.wE = armW(s, side);
+  const r = s.r, q = s.q, m = s.n + s.e, S = fr.ms, E = fr.me, wE = s.wE;
+  for (let i = 0; i < m; i++) {
+    const x = r[i * 2], y = r[i * 2 + 1], e = wE[i];
+    let X = S[0] * x + S[2] * y + S[4], Y = S[1] * x + S[3] * y + S[5];
+    if (e > 0) { X += (E[0] * x + E[2] * y + E[4] - X) * e; Y += (E[1] * x + E[3] * y + E[5] - Y) * e; }
+    q[i * 2] = X; q[i * 2 + 1] = Y;
+  }
+}
+
+/* ---------- pre-deform ops (work on s.r in rest space) ---------- */
+// hanging strands: rotate about a root by an angle that grows with distance below it
+function opBend(s, part, F) {
+  const list = part.bend, r = s.r, m = s.n + s.e;
+  for (let b = 0; b < list.length; b++) {
+    const bd = list[b];
+    let ang = -F.P[bd.k] * bd.amp * DEG;
+    if (!ang) continue;
+    // carry later roots along with this stage
+    let rx = bd.x, ry = bd.y;
+    for (let j = 0; j < b; j++) { const pj = list[j]; if (pj._c) { const dx = rx - pj.x, dy = ry - pj.y; rx = pj.x + dx * pj._c - dy * pj._s; ry = pj.y + dx * pj._s + dy * pj._c; } }
+    const full = Math.cos(ang), fulls = Math.sin(ang);
+    bd._c = full; bd._s = fulls;
+    for (let i = 0; i < m; i++) {
+      const dy0 = r[i * 2 + 1] - ry; if (dy0 <= 0) continue;
+      if (bd.xmin != null && s.p[i * 2] < bd.xmin) continue;
+      const sN = Math.min(1, dy0 / bd.len), a = ang * (sN >= 1 ? 1 : Math.pow(sN, bd.pow || 1.4));
+      const c = Math.cos(a), sn = Math.sin(a), dx = r[i * 2] - rx;
+      r[i * 2] = rx + dx * c - dy0 * sn; r[i * 2 + 1] = ry + dx * sn + dy0 * c;
+    }
+  }
+}
+function interp(A, x) {     // piecewise-linear y(x) over points sorted by x
+  const n = A.length;
+  if (x <= A[0][0]) return A[0][1];
+  for (let i = 1; i < n; i++) if (x <= A[i][0]) { const a = A[i - 1], b = A[i]; return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0] || 1); }
+  return A[n - 1][1];
+}
+function lid(E, x, open, smile, o) {
+  const t = clamp((x - E.x0) / (E.x1 - E.x0), 0, 1), bump = 4 * t * (1 - t);
+  const U = interp(E.U, x), L = interp(E.L, x);
+  const Cn = U + 0.84 * (L - U);
+  const Cs = E.y0 + (E.y1 - E.y0) * t - 5 * bump;
+  const C = Cn + (Cs - Cn) * smile;
+  const Lo = L - smile * 7 * bump;
+  const o1 = Math.min(open, 1);
+  let Un = C + (U - C) * o1; if (open > 1) Un -= (open - 1) * 20 * bump;
+  const Ln = C + (Lo - C) * o1;
+  if (Un > Ln) Un = Ln;
+  o[0] = Un - U; o[1] = Ln - L;
+}
+function opEye(s, part, F) {
+  const E = part.eyeD, P = F.P, r = s.r, n = s.n, m = n + s.e;
+  const open = E.side === 'L' ? P.EyeLOpen : P.EyeROpen, smile = P.EyeSmile;
+  if (s.ball) { const ex = P.EyeBallX * 8.5 * s.ball, ey = -P.EyeBallY * 5.5 * s.ball; for (let i = 0; i < m; i++) { r[i * 2] += ex; r[i * 2 + 1] += ey; } }
+  const wu = s.wu || 0, wl = s.wl || 0, wuA = s.wuA, wlA = s.wlA;
+  if (!wu && !wl && !wuA) return;
+  for (let i = 0; i < m; i++) {
+    const a = wuA ? (i < n ? wuA[i] : 0) : wu, b = wlA ? (i < n ? wlA[i] : 0) : wl;
+    if (!a && !b) continue;
+    lid(E, r[i * 2], open, smile, T3);
+    r[i * 2 + 1] += a * T3[0] + b * T3[1];
+  }
+}
+function opBrow(s, part, F) {
+  const P = F.P, r = s.r, m = s.n + s.e, sd = part.side;   // sd: +1 on screen-left brow
+  const ang = P.BrowAngle * 13 * DEG * sd, dy = -(sd > 0 ? P.BrowRY : P.BrowLY) * 7 - Math.max(0, (sd > 0 ? P.EyeROpen : P.EyeLOpen) - 1) * 14;
+  const c = Math.cos(ang), sn = Math.sin(ang), cx = part.cx, cy = part.cy;
+  for (let i = 0; i < m; i++) { const dx = r[i * 2] - cx, dyy = r[i * 2 + 1] - cy; r[i * 2] = cx + dx * c - dyy * sn; r[i * 2 + 1] = cy + dx * sn + dyy * c + dy; }
+}
+function opFur(s, part, F) {
+  const w = s.wig; if (!w) return;
+  const r = s.r, n = s.n, fu = part.fur, t = F.t * (fu.sp || 2.2), amp = fu.amp || 1.5, puff = F.P.CrPuff * (fu.puff || 7);
+  for (let i = 0; i < n; i++) {
+    const k = w[i * 2] || w[i * 2 + 1]; if (!k) continue;
+    const a = Math.sin(t + i * 1.37) * amp + puff;
+    r[i * 2] += w[i * 2] * a; r[i * 2 + 1] += w[i * 2 + 1] * a;
+  }
+}
+function opCBlink(s, part, F) {
+  const r = s.r, m = s.n + s.e, k = lerp(0.07, 1, F.P.CrEyeOpen), cy = part.cb[1], cx = part.cb[0], sl = part.cb[2] || 0;
+  // squash along the eye's own (slightly tilted) vertical axis
+  for (let i = 0; i < m; i++) { const dx = r[i * 2] - cx, dy = r[i * 2 + 1] - cy - dx * sl; r[i * 2 + 1] = cy + dx * sl + dy * k; }
+}
+function opCMouth(s, part, F) {   // creature mouth: lower lip follows CrMouth
+  const r = s.r, m = s.n + s.e, c = part.cm, k = lerp(0.1, 1.3, F.P.CrMouth);
+  for (let i = 0; i < m; i++) {
+    const yl = c[1] + (c[3] - c[1]) * (r[i * 2] - c[0]) / (c[2] - c[0]);
+    if (r[i * 2 + 1] > yl + 0.5) r[i * 2 + 1] = yl + (r[i * 2 + 1] - yl) * k;
+  }
+}
+const OPS = { bend: opBend, eye: opEye, brow: opBrow, fur: opFur, cblink: opCBlink, cmouth: opCMouth };
+
+/* ---------- mouth (procedural) ---------- */
+function mouthGeom(F) {
+  if (F.mouth) return F.mouth;
+  const P = F.P, form = P.MouthForm, open = clamp(P.MouthOpen, 0, 1);
+  const sag = 3 + 7.5 * form;
+  const hw = 25 + 4 * form - 6.5 * open * (1 - 0.6 * Math.max(0, form));
+  const cy = 330 - sag * 0.5;
+  const mu = cy + sag * (1 - 0.7 * open) - open * 2.5;
+  const ml = cy + sag + open * (17 + 6 * Math.max(0, form));
+  return (F.mouth = { cx: 758, hw, cy, mu, ml, open });
+}
+const MOUTH = {
+  // closed outline: L, u1, um, u2, R, l2, lm, l1
+  fill(s, F) {
+    const g = mouthGeom(F), r = s.r, x = g.cx, w = g.hw;
+    const yu = (k) => g.cy + (g.mu - g.cy) * (1 - k * k), yl = (k) => g.cy + (g.ml - g.cy) * (1 - k * k * k * k * 0.5 - k * k * 0.5);
+    const P = [[-1, 0], [-.55, 1], [0, 1], [.55, 1], [1, 0], [.6, 2], [0, 2], [-.6, 2]];
+    for (let i = 0; i < 8; i++) { const k = P[i][0], m = P[i][1]; r[i * 2] = x + k * w; r[i * 2 + 1] = m === 0 ? g.cy : m === 1 ? yu(k) : yl(k); }
+  },
+  upper(s, F) {
+    const g = mouthGeom(F), r = s.r, ks = [-1.06, -.55, 0, .55, 1.06];
+    for (let i = 0; i < 5; i++) { const k = ks[i], kk = Math.min(1, Math.abs(k)); r[i * 2] = g.cx + k * g.hw; r[i * 2 + 1] = g.cy + (g.mu - g.cy) * (1 - kk * kk) - (Math.abs(k) > 1 ? 0.8 : 0); }
+  },
+  lower(s, F) {
+    const g = mouthGeom(F), r = s.r, ks = [-.72, -.4, 0, .4, .72];
+    for (let i = 0; i < 5; i++) { const k = ks[i]; r[i * 2] = g.cx + k * g.hw; r[i * 2 + 1] = g.cy + (g.ml - g.cy) * (1 - k * k * k * k * 0.5 - k * k * 0.5); }
+  },
+  teeth(s, F) {
+    const g = mouthGeom(F), r = s.r, th = 2 + 5 * Math.min(1, g.open * 2.2), ks = [-1, -.5, 0, .5, 1];
+    for (let i = 0; i < 5; i++) { const k = ks[i]; r[i * 2] = g.cx + k * g.hw; r[i * 2 + 1] = g.cy + (g.mu - g.cy) * (1 - k * k) - 2; }
+    for (let i = 0; i < 3; i++) { const k = [.8, 0, -.8][i]; r[10 + i * 2] = g.cx + k * g.hw; r[11 + i * 2] = g.cy + (g.mu - g.cy) * (1 - k * k) + th; }
+  },
+  tongue(s, F) {
+    const g = mouthGeom(F), r = s.r, rx = g.hw * 0.62, ry = 5 + 5 * g.open, cy = g.ml - ry * 0.35;
+    for (let i = 0; i < 8; i++) { const a = i / 8 * TAU; r[i * 2] = g.cx + Math.cos(a) * rx; r[i * 2 + 1] = cy + Math.sin(a) * ry; }
+  },
+  shade(s, F) {      // little shadow under the lower lip
+    const g = mouthGeom(F), r = s.r, y = g.ml + 6.5, w = g.hw * 0.36;
+    r[0] = g.cx - w; r[1] = y - 0.6; r[2] = g.cx; r[3] = y + 0.9; r[4] = g.cx + w; r[5] = y - 0.6;
+  },
+};
+
+/* ---------- model ---------- */
+function Model() {
+  this.parts = []; this.byId = {}; this.P = {}; this.eyes = {};
+  for (const p of PARAMS) this.P[p[0]] = p[4];
+  this.phys = new Phys(); this.F = null; this.K = K;
+}
+Model.prototype.add = function (id, g, def) {
+  if (!GROUP[g]) throw new Error('unknown group ' + g);
+  if (this.byId[id]) throw new Error('duplicate part ' + id);
+  const part = Object.assign({}, def, { id, g });
+  part.base = def.base ? mk(def.base) : null;
+  part.inner = (def.inner || []).map(mk);
+  part.over = (def.over || []).map(mk);
+  part.all = (part.base ? [part.base] : []).concat(part.inner, part.over);
+  part.ops = (def.ops || []).map((k) => { if (!OPS[k]) throw new Error('unknown op ' + k); return OPS[k]; });
+  for (const s of part.all) { if (s.gen) { const fn = MOUTH[s.gen]; if (!fn) throw new Error('unknown gen ' + s.gen); s.genFn = fn; } }
+  this.parts.push(part); this.byId[id] = part;
+  return part;
+};
+Model.prototype.update = function (t) {
+  const F = this.F = makeFrame(this.P, t || 0);
+  for (const part of this.parts) {
+    const fn = GROUP[part.g], ops = part.ops;
+    for (const s of part.all) {
+      if (s.genFn) s.genFn(s, F); else s.r.set(s.p);
+      for (let i = 0; i < ops.length; i++) ops[i](s, part, F);
+      fn(s, part, F);
+    }
+  }
+  return F;
+};
+Model.prototype.draw = function (ctx) {
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  const F = this.F;
+  for (const part of this.parts) drawPart(ctx, part, F, this);
+};
+// deformed position of a rest-space point that rides on a group (for hit areas / UI)
+Model.prototype.point = function (g, x, y) {
+  const F = this.F, o = [x, y];
+  if (!F) return o;
+  if (g === 'head') headXf(x, y, 0.6, 1, F, o);
+  else if (g === 'body') bodyXf(x, y, 0, F, o);
+  else if (g === 'crea') { const M = F.mCreaHead; o[0] = M[0] * x + M[2] * y + M[4]; o[1] = M[1] * x + M[3] * y + M[5]; }
+  return o;
+};
+// rig overlay: anchors, handles and pivots
+Model.prototype.drawRig = function (ctx, scale) {
+  const px = 1 / scale;
+  ctx.save(); ctx.lineWidth = px;
+  for (const part of this.parts) {
+    if (part.hidden && !part.rigShow) continue;
+    const hue = (part.id.split('').reduce((a, c) => a * 31 + c.charCodeAt(0) | 0, 7) >>> 0) % 360;
+    for (const s of part.all) {
+      if (s.tp || s.n < 3) continue;
+      ctx.strokeStyle = 'hsla(' + hue + ',85%,45%,.55)';
+      trace(ctx, s); ctx.stroke();
+      ctx.fillStyle = 'hsla(' + hue + ',85%,38%,.9)';
+      const q = s.q, d = 2.2 * px;
+      for (let i = 0; i < s.n; i++) ctx.fillRect(q[i * 2] - d, q[i * 2 + 1] - d, d * 2, d * 2);
+    }
+  }
+  const F = this.F, piv = (x, y, c) => { ctx.strokeStyle = c; ctx.lineWidth = 2 * px; ctx.beginPath(); ctx.arc(x, y, 9 * px, 0, TAU); ctx.moveTo(x - 14 * px, y); ctx.lineTo(x + 14 * px, y); ctx.moveTo(x, y - 14 * px); ctx.lineTo(x, y + 14 * px); ctx.stroke(); };
+  const o = [0, 0];
+  bodyXf(K.HIP[0], K.HIP[1], 0, F, o); piv(o[0], o[1], '#e11d74');
+  headXf(K.NP[0], K.NP[1], 0, 1, F, o); piv(o[0], o[1], '#e11d74');
+  for (const sd of ['R', 'L']) {
+    const A = K.arm[sd], fr = sd === 'R' ? F.armR : F.armL;
+    for (const [pt, M] of [[A.S, fr.ms], [A.E, fr.me], [A.W, fr.me]]) piv(M[0] * pt[0] + M[2] * pt[1] + M[4], M[1] * pt[0] + M[3] * pt[1] + M[5], '#0a8f6a');
+  }
+  ctx.restore();
+};
+
+G.Rig = { K, PARAMS, RANGE, PHYS, Model, parse, clamp, lerp, sstep, DEG, TAU };
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* =====================================================================
+ * art.js — the character, redrawn as vector parts (model space 1517x2409)
+ * Point syntax: "x,y x,y ..."   !x,y = sharp corner   ~x,y = no outline on
+ * the segment that starts at this point.
+ * R / L are the CHARACTER's right / left (R is on screen-left).
+ * ===================================================================== */
+(function (G) {
+'use strict';
+const Rig = G.Rig;
+
+const C = {
+  skin: '#ffeedd', skinSh: '#f8cdb9', skinSh2: '#efb5a0', skinLine: '#6e382e',
+  hair: '#2c3789', hairSh: '#202a6c', hairDeep: '#161c50', hairHi: '#4f63c6', hairHi2: '#93a6ee', hairLine: '#12163f',
+  yel: '#cbb60c', yelSh: '#a48f00', yelHi: '#e6d64e', yelLine: '#4a3d00',
+  navy: '#2a3690', navyHi: '#4656bd', navyLine: '#12163f',
+  grey: '#75706b', greySh: '#59544f', greyHi: '#948e88', greyLine: '#2a2725',
+  blk: '#333336', blkSh: '#202023', blkHi: '#62626c', blkLine: '#0d0d10',
+  red: '#aa1b20', redSh: '#7d1015', redLine: '#3a0508',
+  gold: '#dcb72a', goldSh: '#a47c10', goldHi: '#fff4b8', goldLine: '#54390a',
+  fur: '#ffffff', furSh: '#dde3f6', furSh2: '#c4cdee', furLine: '#646b98',
+  lash: '#17153a',
+};
+
+/* ---------- small builders ---------- */
+const f = (fill, p, o) => Object.assign({ f: fill, p }, o);
+const l = (color, w, p, o) => Object.assign({ s: color, w, p, open: true, tp: [0.32, 0.32] }, o);
+const st = (color, w, p, o) => Object.assign({ s: color, w, p }, o);
+const pipe = (p, w, o) => Object.assign({ s: C.navyLine, w: w + 4.2, s2: C.navy, w2: w, p, open: true }, o);
+const rpipe = (p, w, o) => Object.assign({ s: C.redLine, w: w + 4, s2: C.red, w2: w, p, open: true }, o);
+const num = (v) => Math.round(v * 10) / 10;
+function ell(cx, cy, rx, ry, n, rot) {
+  n = n || 8; rot = rot || 0; const out = [], c = Math.cos(rot), s = Math.sin(rot);
+  for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2, x = Math.cos(a) * rx, y = Math.sin(a) * ry; out.push(num(cx + x * c - y * s) + ',' + num(cy + x * s + y * c)); }
+  return out.join(' ');
+}
+function mir(str, ax) {            // mirror about the face centre line (x = 757)
+  ax = ax == null ? 1514 : ax;
+  return str.trim().split(/\s+/).map((t) => { const m = /^([!~]*)([-\d.]+),([-\d.]+)$/.exec(t); return m[1] + num(ax - +m[2]) + ',' + m[3]; }).join(' ');
+}
+function rnd32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// dense samples of the smooth closed curve through guide points -> [{x,y,seg}]
+function sampleClosed(g, closed) {
+  const n = g.n, p = g.p, k = 0.335, hd = [];
+  for (let i = 0; i < n; i++) {
+    if (g.cor[i] || (!closed && (i === 0 || i === n - 1))) { hd.push([0, 0, 0, 0]); continue; }
+    const a = ((i - 1 + n) % n) * 2, b = ((i + 1) % n) * 2, c = i * 2;
+    let tx = p[b] - p[a], ty = p[b + 1] - p[a + 1]; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+    const d1 = Math.hypot(p[c] - p[a], p[c + 1] - p[a + 1]) * k, d2 = Math.hypot(p[b] - p[c], p[b + 1] - p[c + 1]) * k;
+    hd.push([-tx * d1, -ty * d1, tx * d2, ty * d2]);
+  }
+  const out = [], m = closed ? n : n - 1;
+  for (let i = 0; i < m; i++) {
+    const j = (i + 1) % n, x0 = p[i * 2], y0 = p[i * 2 + 1], x3 = p[j * 2], y3 = p[j * 2 + 1];
+    const x1 = x0 + hd[i][2], y1 = y0 + hd[i][3], x2 = x3 + hd[j][0], y2 = y3 + hd[j][1];
+    const N = Math.max(4, Math.ceil(Math.hypot(x3 - x0, y3 - y0) / 3));
+    for (let q = 0; q < N; q++) { const t = q / N, u = 1 - t; out.push({ x: u * u * u * x0 + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3, y: u * u * u * y0 + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3, seg: i }); }
+  }
+  if (!closed) out.push({ x: p[(n - 1) * 2], y: p[(n - 1) * 2 + 1], seg: n - 2 });
+  return out;
+}
+// fluffy outline: tufts along a guide curve. Returns a point set with wiggle vectors.
+function fur(guide, o) {
+  o = Object.assign({ step: 30, h: 17, hv: 0.7, flow: [0, 0.35], seed: 7, skip: [], big: 0.22 }, o);
+  const g = Rig.parse(guide), S = sampleClosed(g, true), N = S.length, R = rnd32(o.seed);
+  let area = 0; for (let i = 0; i < N; i++) { const a = S[i], b = S[(i + 1) % N]; area += a.x * b.y - b.x * a.y; }
+  const sg = area > 0 ? 1 : -1;       // y-down: area>0 == visually clockwise
+  const L = [0]; for (let i = 1; i <= N; i++) L.push(L[i - 1] + Math.hypot(S[i % N].x - S[i - 1].x, S[i % N].y - S[i - 1].y));
+  const tot = L[N];
+  const at = (d) => { d = ((d % tot) + tot) % tot; let lo = 0, hi = N; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (L[m] <= d) lo = m; else hi = m; }
+    const a = S[lo], b = S[(lo + 1) % N], t = (d - L[lo]) / ((L[lo + 1] - L[lo]) || 1), a2 = S[(lo - 2 + N) % N], b2 = S[(lo + 3) % N];
+    let tx = b2.x - a2.x, ty = b2.y - a2.y; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+    return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, nx: ty * sg, ny: -tx * sg, seg: a.seg }; };
+  const skipped = (seg) => o.skip.some((r) => (r[0] <= r[1] ? seg >= r[0] && seg < r[1] : seg >= r[0] || seg < r[1]));
+  const pts = [], cor = [], ns = [], wig = [];
+  const push = (x, y, c, n, wx, wy) => { pts.push(x, y); cor.push(c); ns.push(n); wig.push(wx, wy); };
+  let d = 0;
+  while (d < tot - o.step * 0.35) {
+    const a = at(d);
+    if (skipped(a.seg)) { push(a.x, a.y, 0, 1, 0, 0); d += o.step * 1.2; continue; }
+    const big = R() < o.big;
+    const w = Math.min(o.step * (0.68 + 0.64 * R()) * (big ? 1.25 : 1), tot - d);
+    const h = o.h * (1 - o.hv / 2 + o.hv * R()) * (big ? 1.6 : 1);
+    const lean = (R() - 0.3) * 0.5;
+    const b1 = at(d + w * 0.3), t = at(d + w * (0.56 + lean)), b2 = at(d + w * 0.84);
+    let wx = t.nx + o.flow[0], wy = t.ny + o.flow[1]; const wl = Math.hypot(wx, wy) || 1; wx /= wl; wy /= wl;
+    push(a.x - a.nx * 1.5, a.y - a.ny * 1.5, 1, 0, 0, 0);
+    push(b1.x + b1.nx * h * 0.6 + o.flow[0] * h * 0.2, b1.y + b1.ny * h * 0.6 + o.flow[1] * h * 0.2, 0, 0, wx * 0.45, wy * 0.45);
+    push(t.x + t.nx * h + o.flow[0] * h, t.y + t.ny * h + o.flow[1] * h, 1, 0, wx, wy);
+    push(b2.x + b2.nx * h * 0.26 + o.flow[0] * h * 0.1, b2.y + b2.ny * h * 0.26 + o.flow[1] * h * 0.1, 0, 0, wx * 0.3, wy * 0.3);
+    d += w;
+  }
+  const n = cor.length;
+  return { p: new Float32Array(pts), cor: new Uint8Array(cor), ns: new Uint8Array(ns), wig: new Float32Array(wig), n };
+}
+// ribbon of varying width along a centre line "x,y,w ..." (for the tail)
+function band(center, capNS) {
+  const c = center.trim().split(/\s+/).map((t) => t.split(',').map(Number)), n = c.length;
+  const Ls = [], Rs = [];
+  for (let i = 0; i < n; i++) {
+    const a = c[Math.max(0, i - 1)], b = c[Math.min(n - 1, i + 1)];
+    let tx = b[0] - a[0], ty = b[1] - a[1]; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+    const w = c[i][2] / 2;
+    Ls.push([c[i][0] + ty * w, c[i][1] - tx * w]); Rs.push([c[i][0] - ty * w, c[i][1] + tx * w]);
+  }
+  const out = [];
+  for (let i = 0; i < n - 1; i++) out.push((i === 0 ? '!' : '') + num(Ls[i][0]) + ',' + num(Ls[i][1]));
+  out.push('!' + num(c[n - 1][0]) + ',' + num(c[n - 1][1]));
+  for (let i = n - 2; i >= 0; i--) out.push((i === 0 ? (capNS ? '~!' : '!') : '') + num(Rs[i][0]) + ',' + num(Rs[i][1]));
+  return out.join(' ');
+}
+const dummy = (n, corners) => { const a = []; for (let i = 0; i < n; i++) a.push((corners && corners.indexOf(i) >= 0 ? '!' : '') + '0,0'); return a.join(' '); };
+
+G.buildModel = function () {
+  const M = new Rig.Model();
+  const add = (id, g, def) => M.add(id, g, def);
+  const LW = 3.2;
+
+  /* ============ creature: fluffy body behind her (back layer) ============ */
+  const fluffBend = [{ k: 'CrFluff', x: 1090, y: 250, len: 420, amp: 3.2, pow: 1.4, xmin: 905 }];
+  add('creaBack', 'att', {
+    fluff: true, ops: ['bend', 'fur'], bend: fluffBend, fur: { amp: 1.6, sp: 2.0, puff: 8 },
+    base: f(C.fur, fur('352,332 362,258 398,202 446,162 506,132 566,113 640,96 760,70 880,100 950,166 1037,212 1097,282 1130,358 1168,400 1194,446 1210,502 1220,560 1214,606 1178,640 1120,638 1062,630 1012,640 960,600 900,480 760,440 620,470 520,500 420,480 362,420',
+      { step: 33, h: 21, seed: 11, flow: [0.05, 0.4] }), { s: C.furLine, w: LW }),
+    inner: [
+      f(C.furSh, '1150,330 1200,430 1226,540 1218,620 1180,560 1160,470 1120,380', { a: .75 }),
+      f(C.furSh, '352,340 372,300 420,330 470,300 520,290 560,250 600,240 600,300 470,360 380,400', { a: .6 }),
+    ],
+    over: [
+      l(C.furSh2, 3, '1004,250 1030,262 1048,286'), l(C.furSh2, 3, '1050,330 1078,346 1094,374'), l(C.furSh2, 3, '1098,410 1124,430 1136,462'),
+      l(C.furSh2, 3, '1040,420 1062,444 1070,476'), l(C.furSh2, 3, '1128,500 1150,524 1156,556'), l(C.furSh2, 3, '1068,520 1090,548 1094,580'),
+      l(C.furSh2, 3, '980,330 1000,352 1006,380'), l(C.furSh2, 3, '430,210 452,196 478,192'), l(C.furSh2, 3, '500,180 524,166 550,164'),
+      l(C.furSh2, 3, '400,268 418,250 442,244'),
+    ],
+  });
+
+  /* tail (two copies: one behind her arm, one in front with a cut-out) */
+  const TAIL = band('1186,624,64 1176,700,58 1128,776,52 1070,846,46 1040,902,42 1052,946,38 1090,960,34 1124,946,30 1156,916,28 1190,892,26 1226,896,24 1258,926,22 1266,968,20 1246,1010,17 1206,1034,13 1166,1036,8 1140,1026,2', true);
+  const tailBend = [{ k: 'CrTail', x: 1236, y: 898, len: 150, amp: 11, pow: 1.3, xmin: 1128 }];
+  const tailDef = () => ({
+    ops: ['bend'], bend: tailBend,
+    base: f({ lg: [1186, 640, 1166, 1036], st: [[0, '#ffffff'], [0.7, '#f4f6ff'], [1, '#e2e8fb']] }, TAIL, { s: C.furLine, w: LW }),
+    inner: [f(C.furSh, band('1160,640,26 1150,706,24 1104,778,22 1050,848,20 1024,904,18 1040,952,16 1090,972,15 1128,958,13', false), { a: .8 })],
+  });
+  add('tailBack', 'tail', tailDef());
+
+  /* ============ back hair ============ */
+  add('hairBack', 'head', {
+    zm: 2, z: 0.45, ops: ['bend'], bend: [{ k: 'HairBack', x: 758, y: 150, len: 250, amp: 4.5, pow: 1.6 }],
+    base: f(C.hairSh, '758,5 812,13 860,39 904,82 934,132 947,184 945,238 938,292 933,338 940,357 !978,372 950,379 926,386 890,394 850,392 815,386 790,398 757,402 726,398 700,392 672,389 631,390 600,386 !575,381 600,364 616,344 624,314 620,290 610,259 598,232 585,192 588,155 613,100 662,50 708,18', { s: C.hairLine, w: LW }),
+    inner: [
+      f(C.hairDeep, '690,290 830,290 868,410 650,410'),
+      f(C.hair, '!604,318 613,338 607,358 !588,376 600,356 605,338'),
+      f(C.hair, '!936,342 947,360 !970,371 948,368 938,356'),
+    ],
+    over: [l(C.hairLine, 2.2, '664,350 668,372 676,388'), l(C.hairLine, 2.2, '836,352 834,372 826,386')],
+  });
+
+  /* ============ legs ============ */
+  add('thighL', 'none', { base: f(C.skin, '765,1050 985,1040 978,1150 952,1300 918,1450 900,1512 766,1512', { s: C.skinLine, w: LW }) });
+  add('bootL', 'none', {
+    base: f(C.blk, '!770,1502 900,1502 898,1700 895,1821 883,1907 859,1992 845,2050 !827,2128 836,2150 !827,2174 836,2203 873,2245 907,2278 935,2320 973,2340 1030,2355 !1044,2378 !1040,2401 908,2401 !860,2379 825,2345 !797,2321 !789,2322 !808,2402 !760,2402 !764,2200', { s: C.blkLine, w: LW }),
+    inner: [
+      f(C.blkHi, '880,1700 876,1850 862,1960 846,2040 856,2040 874,1960 888,1850 890,1700', { a: .45 }),
+      f(C.blkHi, '1018,2362 962,2347 920,2320 930,2314 970,2340 1022,2356', { a: .5 }),
+      f(C.blkSh, '764,1502 792,1502 786,1900 800,2100 792,2322 808,2402 760,2402'),
+    ],
+    over: [
+      l('#70707a', 2.6, '1038,2396 908,2396 862,2376 800,2320', { tp: [.1, .2] }),
+      l(C.blkLine, 2.2, '826,2166 800,2175 775,2181'), l(C.blkLine, 2.2, '775,2181 790,2186 802,2190'),
+      l(C.blkLine, 2.2, '794,1530 808,1529 822,1528'),
+    ],
+  });
+  add('thighR', 'none', {
+    base: f(C.skin, '!528,1010 700,1005 !772,1050 !768,1512 !596,1512 577,1447 560,1373 550,1293 543,1200 537,1127 530,1060', { s: C.skinLine, w: LW }),
+    inner: [
+      f(C.skinSh, '520,1030 700,1070 720,1104 610,1092 536,1072'),
+      f(C.skinSh, '744,1050 776,1050 772,1512 742,1512 750,1300', { a: .8 }),
+      f(C.skinSh, '596,1512 772,1512 772,1486 700,1492 600,1484', { a: .8 }),
+      f({ rg: [640, 1250, 0, 150], st: [[0, 'rgba(255,255,255,.3)'], [1, 'rgba(255,255,255,0)']] }, ell(640, 1250, 60, 190)),
+    ],
+  });
+  add('bootR', 'none', {
+    base: f(C.blk, '!592,1502 607,1583 619,1621 619,1792 630,1888 654,1992 673,2059 !690,2130 679,2154 !690,2182 674,2202 630,2250 592,2302 554,2334 486,2353 !472,2380 !480,2402 612,2401 !676,2360 702,2340 !726,2321 !731,2322 !708,2402 !762,2402 !766,2200 !768,1502', { s: C.blkLine, w: LW }),
+    inner: [
+      f(C.blkHi, '640,1560 652,1700 652,1850 668,1990 682,2060 670,2060 650,1990 634,1850 632,1700 628,1560', { a: .5 }),
+      f(C.blkHi, '500,2362 560,2345 600,2318 590,2312 548,2338 496,2356', { a: .5 }),
+      f(C.blkSh, '742,1502 770,1502 768,2402 730,2402 736,2322 744,2100 748,1900'),
+      f(C.blkHi, '594,1504 768,1504 768,1516 600,1516', { a: .35 }),
+    ],
+    over: [
+      l('#70707a', 2.6, '482,2396 612,2396 672,2360 724,2320', { tp: [.1, .2] }),
+      l(C.blkLine, 2.2, '607,1526 660,1530 722,1531'),
+      l(C.blkLine, 2.2, '611,1562 650,1574 678,1578'), l(C.blkLine, 2.2, '678,1578 656,1582 636,1583'),
+      l(C.blkLine, 2.2, '692,2166 718,2175 740,2181'), l(C.blkLine, 2.2, '740,2181 726,2186 713,2190'),
+      l(C.blkLine, 2.2, '765,1506 758,1532 766,1550 764,1594', { tp: [.1, .5] }),
+      l(C.blkLine, 2.2, '731,2322 720,2360 709,2400', { tp: [0, .1] }),
+    ],
+  });
+
+  /* ============ hips (lower torso, under the shorts and waist cloth) ============ */
+  add('hips', 'body', {
+    base: f(C.skin, '~590,860 575,912 548,956 ~530,1000 ~540,1052 ~760,1072 ~985,1050 992,994 958,946 940,918 ~915,872 ~760,850', { s: C.skinLine, w: LW }),
+    inner: [
+      f(C.skinSh, '598,872 575,912 548,956 566,958 592,914 612,880'),
+      f(C.skinSh, '905,860 940,918 958,946 992,994 972,990 942,946 924,920 890,866'),
+    ],
+    over: [l(C.skinLine, 2, '884,911 874,936 862,960', { tp: [.15, .4] })],
+  });
+
+  /* ============ shorts ============ */
+  add('shorts', 'body', {
+    base: f(C.blk, '!530,996 548,954 620,958 700,975 800,985 860,965 962,941 !990,990 986,1050 900,1076 800,1086 !683,1081 610,1068 !543,1058', { s: C.blkLine, w: LW }),
+    inner: [
+      f(C.blkHi, '537,982 600,991 657,1006 657,1014 600,1000 537,991', { a: .5 }),
+      f(C.blkHi, '860,966 910,956 963,945 965,952 910,964 862,974', { a: .5 }),
+    ],
+  });
+
+  /* boot ribbon */
+  const ribBend = [{ k: 'BootRibbon', x: 594, y: 1553, len: 1, amp: 11 }];
+  add('ribbonTails', 'none', { ops: ['bend'], bend: ribBend, over: [rpipe('592,1554 577,1600 559,1640 546,1668', 4.6), rpipe('597,1558 600,1612 604,1668', 4.6)] });
+  add('ribbonLoop', 'none', { over: [Object.assign(rpipe('594,1546 570,1528 550,1538 547,1566 561,1588 592,1562', 4.6), { open: false }), f(C.red, ell(594, 1552, 6.5, 6.5), { s: C.redLine, w: 2.2 })] });
+
+  /* ============ waist cloth ============ */
+  const skirtBend = [{ k: 'Skirt1', x: 810, y: 940, len: 1000, amp: 3.3, pow: 1.3 }, { k: 'Skirt2', x: 905, y: 1450, len: 500, amp: 5.5, pow: 1.5 }];
+  const SKIRT = '!632,904 700,920 800,947 850,963 903,979 !988,990 994,1013 997,1080 993,1147 997,1213 1003,1293 1010,1413 1013,1500 1011,1602 1002,1659 988,1726 969,1802 954,1869 !937,1940 917,1888 897,1792 859,1640 821,1502 783,1360 757,1280 727,1173 690,1087 650,980';
+  const shift = (str, dx, dy) => str.trim().split(/\s+/).map((t) => { const m = /^([!~]*)([-\d.]+),([-\d.]+)$/.exec(t); return m[1] + num(+m[2] + dx) + ',' + num(+m[3] + dy); }).join(' ');
+  add('legsMask', 'none', { hidden: true, base: { p: '528,1010 537,1127 543,1200 550,1293 560,1373 577,1447 596,1512 607,1583 619,1621 619,1792 630,1888 654,1992 673,2059 690,2130 690,2182 630,2250 554,2334 472,2380 480,2402 1040,2401 1044,2378 973,2340 907,2278 836,2203 827,2128 845,2050 859,1992 883,1907 895,1821 898,1700 900,1502 918,1450 952,1300 978,1150 985,1040 990,990 700,975 530,996' } });
+  add('skirtShadow', 'body', { ops: ['bend'], bend: skirtBend, z: 18, clipBy: 'legsMask', base: f('rgba(40,20,48,.2)', shift(SKIRT, -15, 12)) });
+  add('skirtFlap', 'body', {
+    base: f(C.yel, '!573,912 !632,904 601,930 561,962 !522,992 546,948', { s: C.yelLine, w: LW }),
+    inner: [f(C.yelSh, '540,990 566,962 604,934 632,912 632,930 590,958 552,990', { a: .6 })],
+    over: [pipe('634,903 601,930 561,962 523,991', 5)],
+  });
+  add('skirt', 'body', {
+    ops: ['bend'], bend: skirtBend, z: 18,
+    base: f({ lg: [700, 920, 960, 1900], st: [[0, '#d0bb10'], [1, '#bba608']] }, '!632,904 700,920 800,947 850,963 903,979 !988,990 994,1013 997,1080 993,1147 997,1213 1003,1293 1010,1413 1013,1500 1011,1602 1002,1659 988,1726 969,1802 954,1869 !937,1940 917,1888 897,1792 859,1640 821,1502 783,1360 757,1280 727,1173 690,1087 650,980', { s: C.yelLine, w: LW }),
+    inner: [
+      f(C.yelSh, '856,970 886,984 904,1300 932,1700 940,1940 914,1700 878,1300', { a: .42 }),
+      f(C.yelSh, '972,990 992,992 1014,1500 1012,1602 962,1850 986,1650 995,1500 986,1300', { a: .5 }),
+      f(C.yelHi, '690,924 742,944 802,1300 852,1640 884,1800 846,1640 780,1300 714,1090', { a: .34 }),
+      f(C.yelSh, '632,904 700,920 800,947 903,979 988,990 990,1012 903,1000 800,968 700,941 640,926', { a: .5 }),
+    ],
+    over: [
+      l(C.yelLine, 2, '930,1004 944,1200 950,1420', { a: .45, tp: [.1, .6] }),
+      l(C.yelLine, 2, '820,960 838,1100 852,1240', { a: .35, tp: [.1, .6] }),
+      pipe('632,905 650,980 690,1087 727,1173 757,1280 783,1360 821,1502 859,1640 897,1792 917,1888 !937,1940 954,1869 969,1802 988,1726 1002,1659 1011,1602', 5.2),
+    ],
+  });
+
+  /* ============ arms ============ */
+  // right arm (screen-left)
+  add('fingersR', 'armR', {
+    base: f(C.skin, '!68,1171 40,1184 14,1196 !3,1206 16,1212 44,1210 66,1204 !80,1197', { s: C.skinLine, w: 2.6 }),
+    over: [l(C.skinLine, 1.8, '62,1182 40,1192 20,1202'), l(C.skinLine, 1.8, '66,1192 44,1200 24,1207')],
+  });
+  add('thumbR', 'armR', { base: f(C.skin, '!130,1192 112,1212 !99,1230 105,1238 124,1228 150,1210 !173,1189', { s: C.skinLine, w: 2.6 }) });
+  add('armR', 'armR', {
+    base: f(C.skin, '~620,470 596,474 560,500 522,560 488,632 440,736 392,832 344,900 296,960 248,1016 224,1056 ~206,1084 ~236,1118 256,1096 328,1016 384,952 432,884 480,824 544,720 576,660 ~600,640 ~632,560', { s: C.skinLine, w: LW }),
+    inner: [f(C.skinSh, '590,650 544,720 480,824 432,884 384,952 328,1016 256,1096 250,1082 318,1004 372,942 420,874 468,812 530,712 566,650')],
+  });
+  add('gloveR', 'armR', {
+    base: f(C.grey, '!222,1054 198,1090 172,1128 122,1151 !66,1171 !80,1197 126,1192 !173,1189 !181,1188 208,1144 232,1118 !258,1097', { s: C.greyLine, w: LW }),
+    inner: [
+      f(C.greySh, '181,1188 208,1144 232,1118 258,1097 250,1088 222,1110 196,1138 170,1176 120,1182 80,1188 80,1197 126,1192 173,1189'),
+      f(C.greyHi, '214,1070 190,1104 164,1132 120,1154 124,1160 168,1140 196,1112 220,1078', { a: .55 }),
+    ],
+    over: [l(C.greyLine, 2, '212,1067 231,1087 247,1108', { a: .7, tp: [.1, .1] })],
+  });
+  // left arm (screen-right)
+  add('fingersL', 'armL', {
+    base: f(C.skin, '!1449,1176 1478,1188 1500,1198 !1513,1205 1500,1213 1470,1212 1450,1206 !1440,1200', { s: C.skinLine, w: 2.6 }),
+    over: [l(C.skinLine, 1.8, '1454,1184 1476,1194 1496,1203'), l(C.skinLine, 1.8, '1450,1194 1472,1202 1492,1208')],
+  });
+  add('thumbL', 'armL', { base: f(C.skin, '!1388,1193 1404,1212 !1418,1230 1412,1238 1394,1228 1368,1210 !1345,1189', { s: C.skinLine, w: 2.6 }) });
+  add('armL', 'armL', {
+    base: f(C.skin, '~895,470 912,456 952,464 984,488 1000,536 1028,628 1072,736 1120,824 1152,880 1200,940 1256,1008 1296,1060 ~1314,1086 ~1284,1122 1256,1092 1200,1036 1128,952 1080,888 1032,808 984,728 940,660 ~918,640 ~888,560', { s: C.skinLine, w: LW }),
+    inner: [f(C.skinSh, '930,650 984,728 1032,808 1080,888 1128,952 1200,1036 1256,1092 1262,1078 1210,1024 1140,940 1092,876 1044,796 996,716 952,650')],
+  });
+  add('gloveL', 'armL', {
+    base: f(C.grey, '!1296,1062 1326,1100 1352,1136 1400,1158 !1449,1176 !1440,1200 1396,1194 !1352,1189 !1345,1189 1312,1152 1284,1122 !1258,1094', { s: C.greyLine, w: LW }),
+    inner: [
+      f(C.greySh, '1345,1189 1312,1152 1284,1122 1258,1094 1266,1086 1294,1112 1322,1142 1350,1178 1396,1184 1440,1190 1440,1200 1396,1194 1352,1189'),
+      f(C.greyHi, '1304,1072 1330,1106 1356,1134 1400,1156 1396,1162 1352,1142 1324,1114 1298,1080', { a: .55 }),
+    ],
+  });
+  add('bangle', 'armL', {
+    base: f({ lg: [1262, 1134, 1337, 1072], st: [[0, C.goldSh], [0.45, C.gold], [0.7, '#f3dc6a'], [1, C.gold]] }, '!1299,1050 1318,1058 !1337,1072 1322,1112 !1300,1156 1280,1148 !1262,1134 1278,1094', { s: C.goldLine, w: 2.8 }),
+    inner: [f(C.goldHi, '1306,1058 1322,1068 1310,1100 1292,1140 1284,1136 1300,1098', { a: .75 })],
+  });
+  add('tailHole', 'armL', { hidden: true, base: { p: '1150,870 1224,960 1162,994 1086,897' } });
+  add('tailFront', 'tail', Object.assign(tailDef(), { holeBy: 'tailHole' }));
+  add('creaFringe', 'att', {
+    fluff: true, ops: ['bend', 'fur'], bend: fluffBend, fur: { amp: 1.8, sp: 2.0, puff: 8 },
+    base: f(C.fur, fur('1030,560 1100,540 1180,548 1222,572 1216,612 1182,646 1124,644 1066,636 1022,640 1004,610', { step: 27, h: 20, seed: 5, flow: [0, 0.8], skip: [[9, 10], [0, 3]] }), { s: C.furLine, w: LW }),
+    inner: [f(C.furSh, '1000,618 1070,606 1150,612 1224,596 1234,690 1000,690', { a: .85 })],
+  });
+
+  /* ============ torso ============ */
+  add('torso', 'body', {
+    base: f(C.skin, '~726,405 704,438 652,455 ~606,470 ~590,540 ~592,640 ~604,690 624,732 640,756 639,805 621,836 598,872 ~584,898 ~680,918 ~760,922 ~850,918 ~934,906 899,849 878,805 881,743 ~900,712 ~925,670 ~938,640 ~932,540 912,457 860,450 ~826,443 ~796,405', { s: C.skinLine, w: LW }),
+    inner: [
+      f(C.skinSh, '600,736 910,736 886,770 830,762 760,768 700,762 634,772'),
+      f(C.skinSh, '640,756 639,805 621,836 598,872 580,902 596,904 614,876 636,840 654,806 656,760'),
+      f(C.skinSh, '881,743 878,805 899,849 936,908 920,908 884,852 862,806 864,745'),
+      f(C.skinSh, '826,443 860,450 912,457 932,480 900,474 860,468 830,462', { a: .6 }),
+    ],
+    over: [
+      l(C.skinSh2, 3.2, '756,790 755,822 755,852', { tp: [.5, .5], a: .7 }),
+      l(C.skinLine, 2.2, '753,874 755,886 754,898'),
+    ],
+  });
+  add('inner', 'neck', {
+    z: 22,
+    base: f(C.grey, '725,336 795,336 799,380 801,420 816,442 808,505 798,545 780,588 !757,608 734,588 718,545 706,505 699,442 721,420 724,380', { s: C.greyLine, w: LW }),
+    inner: [
+      f(C.greySh, '716,350 806,350 804,388 786,405 760,411 736,405 718,388'),
+      f(C.greySh, '721,420 724,380 733,380 731,422 714,446 720,505 734,548 748,584 740,592 722,546 708,505 700,442', { a: .7 }),
+      f(C.greyHi, '786,430 794,470 790,520 780,556 774,552 782,518 786,470 780,432', { a: .4 }),
+    ],
+    over: [
+      l(C.greyLine, 2, '727,398 760,404 798,398', { a: .5, tp: [.2, .2] }),
+      l(C.greyLine, 2, '727,461 733,470 741,477', { a: .5 }), l(C.greyLine, 2, '793,464 787,472 780,477', { a: .5 }),
+      l(C.greyLine, 2, '750,536 754,545 757,551', { a: .6 }), l(C.greyLine, 2, '768,536 762,545 758,551', { a: .6 }), l(C.greyLine, 2, '757,551 757,557 757,564', { a: .6 }),
+    ],
+  });
+
+  /* ============ wrap top ============ */
+  add('topR', 'body', {
+    z: 30,
+    base: f(C.yel, '!706,425 692,444 672,472 648,506 622,537 598,562 584,594 577,630 584,668 602,692 !622,705 700,709 ~!790,707 ~!790,640 !752,600 727,561 709,505', { s: C.yelLine, w: LW }),
+    inner: [
+      f({ rg: [626, 600, 0, 46], st: [[0, 'rgba(240,228,110,.55)'], [1, 'rgba(240,228,110,0)']] }, ell(626, 600, 48, 36)),
+      f(C.yelSh, '577,640 590,676 612,696 650,706 700,709 718,690 690,694 650,690 618,676 598,650 586,620'),
+      f(C.yelSh, '746,606 726,634 708,660 699,684 700,709 718,709 713,682 721,656 739,630 757,608', { a: .8 }),
+      f(C.yelSh, '706,425 692,444 672,472 690,476 704,452', { a: .5 }),
+    ],
+  });
+  add('topL', 'body', {
+    z: 36,
+    base: f(C.yel, '!806,417 826,440 838,470 854,503 880,527 910,541 930,566 942,598 946,642 932,678 !905,702 800,708 !712,706 !707,682 715,656 734,630 759,602 777,586 796,542 803,505', { s: C.yelLine, w: LW }),
+    inner: [
+      f({ rg: [868, 590, 0, 52], st: [[0, 'rgba(240,228,110,.55)'], [1, 'rgba(240,228,110,0)']] }, ell(868, 590, 54, 40)),
+      f(C.yelSh, '946,650 934,680 905,702 850,709 780,709 760,700 800,698 850,694 892,684 918,664 934,636'),
+      f(C.yelSh, '806,417 826,440 838,470 822,474 810,450', { a: .5 }),
+    ],
+    over: [
+      l(C.yelLine, 2, '622,672 632,686 640,697', { g2: 1 }), l(C.yelLine, 2, '690,684 694,694 697,703'),
+      l(C.yelLine, 2, '762,687 770,696 777,704'), l(C.yelLine, 2, '905,668 895,686 884,701'),
+      l(C.yelLine, 2, '846,690 842,698 840,705', { a: .6 }), l(C.yelLine, 2, '660,690 662,698 664,705', { a: .6 }),
+    ],
+  });
+  add('frill', 'body', {
+    z: 34,
+    base: f(C.yel, '!616,712 640,716 700,716 760,718 830,716 880,713 !909,708 !906,738 884,746 862,741 838,748 812,742 786,749 762,744 738,750 712,744 688,749 664,742 642,747 !618,738', { s: C.yelLine, w: 2.8 }),
+    inner: [f(C.yelSh, '616,712 909,708 908,724 760,730 618,726', { a: .7 })],
+    over: [l(C.yelLine, 1.8, '664,722 663,734 664,742', { a: .6 }), l(C.yelLine, 1.8, '712,724 712,736 712,744', { a: .6 }), l(C.yelLine, 1.8, '786,726 786,738 786,748', { a: .6 }), l(C.yelLine, 1.8, '838,724 838,738 838,746', { a: .6 }), l(C.yelLine, 1.8, '884,720 884,736 884,745', { a: .6 })],
+  });
+  add('piping', 'body', {
+    z: 38,
+    over: [
+      pipe('619,707 660,711 712,709 760,712 830,711 880,707 906,702', 6.5),
+      pipe('706,426 707,470 710,506 727,561 752,599', 5.2),
+      pipe('806,418 804,470 802,506 796,543 778,586 759,603 734,630 715,656 707,681 711,702', 5.2),
+    ],
+  });
+  add('bowTails', 'body', {
+    z: 52, ops: ['bend'], bend: [{ k: 'Bow', x: 752, y: 722, len: 1, amp: 12 }],
+    over: [
+      f(C.navy, '!744,726 738,770 !728,828 !742,832 750,772 !754,728', { s: C.navyLine, w: 2.6 }),
+      f(C.navy, '!760,726 766,772 !769,823 !784,826 778,770 !768,726', { s: C.navyLine, w: 2.6 }),
+      l(C.navyHi, 2, '744,740 740,780 734,822', { a: .7 }), l(C.navyHi, 2, '766,740 770,780 774,818', { a: .7 }),
+    ],
+  });
+  add('bow', 'body', {
+    z: 52,
+    over: [
+      f(C.navy, '!752,716 730,715 708,726 !697,744 712,760 734,750 !750,724', { s: C.navyLine, w: 2.6 }),
+      f(C.navy, '!756,716 780,715 806,728 !821,748 804,768 780,756 !758,724', { s: C.navyLine, w: 2.6 }),
+      l(C.navyHi, 2.2, '728,722 712,730 704,742', { a: .8 }), l(C.navyHi, 2.2, '782,722 802,732 812,746', { a: .8 }),
+      f(C.navy, '746,712 760,712 762,726 746,727', { s: C.navyLine, w: 2.6 }),
+    ],
+  });
+  add('strings', 'body', {
+    z: 20,
+    over: [pipe('881,808 800,838 720,870 652,897 634,904', 4.4), pipe('618,833 624,862 630,890 634,906', 4.4), f(C.navy, ell(882, 807, 5.5, 5.5), { s: C.navyLine, w: 2.2 })],
+  });
+
+  /* ============ head ============ */
+  add('faceSide', 'head', { zm: 1, z: 0.3, base: f(C.skinSh, '622,205 664,200 692,332 652,320 630,292') });
+  add('faceSideL', 'head', { zm: 1, z: 0.3, base: f(C.skinSh, mir('622,205 664,200 692,332 652,320 630,292')) });
+  add('earR', 'head', {
+    zm: 1, z: 0.2,
+    base: f(C.skin, '628,234 615,246 612,268 620,292 634,310 650,319 657,304 648,272 640,246', { s: C.skinLine, w: 2.8 }),
+    inner: [f(C.skinSh, '624,248 619,268 626,290 640,304 638,280 631,256')],
+  });
+  const blushP = ell(672, 298, 40, 26);
+  add('face', 'head', {
+    base: f(C.skin, '~642,138 ~700,112 ~757,105 ~814,112 ~872,138 ~884,185 887,232 879,262 868,296 858,322 835,340 809,357 780,373 759,380 736,373 705,357 679,340 656,322 646,296 635,262 ~627,232 ~630,185', { s: C.skinLine, w: LW }),
+    inner: [
+      f(C.skinSh, '620,262 620,120 780,105 870,170 872,360 834,356 823,292 811,240 800,196 786,166 770,144 746,150 720,162 700,172 680,190 663,202 651,214 642,238 637,264'),
+      f({ rg: [672, 298, 0, 38], st: [[0, 'rgba(255,128,118,.6)'], [1, 'rgba(255,128,118,0)']] }, blushP, { af: (F) => 0.3 + F.P.Cheek * 0.7 }),
+      f({ rg: [842, 298, 0, 38], st: [[0, 'rgba(255,128,118,.6)'], [1, 'rgba(255,128,118,0)']] }, mir(blushP), { af: (F) => 0.3 + F.P.Cheek * 0.7 }),
+      f(C.skinSh, '700,366 759,384 818,366 800,384 759,392 718,384', { a: .5 }),
+    ],
+    over: [
+      l('#ef8479', 2.2, '655,300 660,291', { af: (F) => F.P.Cheek }), l('#ef8479', 2.2, '666,303 671,294', { af: (F) => F.P.Cheek }), l('#ef8479', 2.2, '677,304 682,295', { af: (F) => F.P.Cheek }),
+      l('#ef8479', 2.2, mir('655,300 660,291'), { af: (F) => F.P.Cheek }), l('#ef8479', 2.2, mir('666,303 671,294'), { af: (F) => F.P.Cheek }), l('#ef8479', 2.2, mir('677,304 682,295'), { af: (F) => F.P.Cheek }),
+    ],
+  });
+  add('nose', 'head', {
+    z: 0.1,
+    over: [f(C.skinSh, '753,296 762,299 758,306', { a: .9 }), l(C.skinLine, 2.4, '755,298 758.5,303 762,301.5', { tp: [.4, .3] }), f('#ffffff', ell(757.5, 290, 4.2, 3.2), { a: .7 })],
+  });
+
+  // eyes — authored for the character's right eye (screen-left), mirrored for the left
+  function eye(id, side, m) {
+    const X = m ? mir : (s) => s;
+    const up = '!634,243 646,238 664,235 684,236 704,241 !726,250', lo = '714,264 696,272 672,272 653,266 641,256';
+    const U = Rig.parse(X(up)), Lp = Rig.parse(X(lo));
+    const Ua = [], La = [];
+    for (let i = 0; i < U.n; i++) Ua.push([U.p[i * 2], U.p[i * 2 + 1]]);
+    La.push(Ua[0], Ua[U.n - 1]); for (let i = 0; i < Lp.n; i++) La.push([Lp.p[i * 2], Lp.p[i * 2 + 1]]);
+    Ua.sort((a, b) => a[0] - b[0]); La.sort((a, b) => a[0] - b[0]);
+    const eyeD = { side, x0: Ua[0][0], y0: Ua[0][1], x1: Ua[Ua.length - 1][0], y1: Ua[Ua.length - 1][1], U: Ua, L: La };
+    const cx = m ? 1514 - 691 : 691;
+    const lg = (y0, y1) => [cx, y0, cx, y1];
+    const sgn = m ? -1 : 1;
+    add(id, 'head', {
+      z: -0.02, ops: ['eye'], eyeD,
+      base: f('#ffffff', X(up) + ' ' + X(lo), { wuA: [0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0], wlA: [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1] }),
+      inner: [
+        f('#cfd4ea', X('!634,243 646,238 664,235 684,236 704,241 !726,250 706,249 684,244 664,243 648,245'), { wu: 1 }),
+        f({ lg: lg(232, 279), st: [[0, '#8a7300'], [0.42, '#c9ad06'], [0.8, '#efd93f'], [1, '#f7e96c']] }, ell(cx, 255, 23.5, 23), { ball: 1 }),
+        f('rgba(70,52,0,.42)', ell(cx, 243, 25, 13), { ball: 1 }),
+        f('#2d2306', ell(cx, 254.5, 7.2, 10.2), { ball: 1 }),
+        f('rgba(255,250,190,.6)', ell(cx, 270.5, 14, 5.5), { ball: 1 }),
+        st('#4a3c00', 2.8, ell(cx, 255, 23.5, 23), { ball: 1 }),
+        f('#ffffff', ell(cx - 8.5 * sgn, 246.5, 6.4, 4.6, 8, -0.35 * sgn), { ball: 0.72 }),
+        f('#ffffff', ell(cx + 9 * sgn, 264.5, 2.5, 2.5), { ball: 0.72, a: .9 }),
+      ],
+      over: [
+        f(C.lash, X('!625,230 640,230.5 662,227.5 686,228.5 707,234.5 !730,252 716,247 704,243 684,238 664,237 647,240 639,245 !643,259 634,251 629,241'), { wu: 1 }),
+        l(C.skinLine, 2.3, X('669,222 690,218.5 712,220 728,227.5'), { wu: 0.72, tp: [.5, .25], a: .85, af: (F) => Rig.clamp((side === 'L' ? F.P.EyeLOpen : F.P.EyeROpen) * 1.6 - 0.35, 0, 1) }),
+        l('#5a3530', 2.1, X('657,270 671,274 688,275'), { wl: 1, tp: [.3, .6] }),
+        l(C.lash, 2.3, X('646,275.5 650,272 654.5,268.5'), { wl: 1, tp: [.05, .5] }),
+        l(C.lash, 2.3, X('654,279.5 657,276 660.5,272.5'), { wl: 1, tp: [.05, .5] }),
+      ],
+    });
+  }
+  eye('eyeR', 'R', false); eye('eyeL', 'L', true);
+  const browP = '!656,206.5 676,199 700,194 !729,197.5 715,201 700,201 678,205';
+  add('browR', 'head', { ops: ['brow'], side: 1, cx: 694, cy: 200, base: f('#1d2568', browP) });
+  add('browL', 'head', { ops: ['brow'], side: -1, cx: 820, cy: 200, base: f('#1d2568', mir(browP)) });
+  add('mouth', 'head', {
+    z: 0.03,
+    base: { gen: 'fill', p: dummy(8, [0, 4]), f: '#7c2831', af: (F) => (F.P.MouthOpen > 0.03 ? 1 : 0) },
+    inner: [{ gen: 'teeth', p: dummy(8, [0, 4]), f: '#ffffff' }, { gen: 'tongue', p: dummy(8), f: '#ee8f88' }],
+    over: [
+      { gen: 'shade', p: dummy(3), open: true, s: C.skinSh2, w: 3, tp: [.5, .5], a: .8 },
+      { gen: 'lower', p: dummy(5), open: true, s: C.skinLine, w: 2.2, tp: [.35, .35], af: (F) => (F.P.MouthOpen > 0.03 ? 1 : 0) },
+      { gen: 'upper', p: dummy(5), open: true, s: C.skinLine, w: 3.1, tp: [.22, .22] },
+    ],
+  });
+
+  /* earring */
+  add('earring', 'head', {
+    zm: 1, z: 0.25, ops: ['bend'], bend: [{ k: 'Earring', x: 649, y: 320, len: 1, amp: 22 }],
+    over: [
+      f({ lg: [640, 330, 668, 400], st: [[0, '#f3dc6a'], [0.5, C.gold], [1, C.goldSh]] }, '!650,327 660,372 !667,390 !653.5,411 !640,389 646,372', { s: C.goldLine, w: 2.4 }),
+      f(C.goldHi, '!650,329 652.5,372 !653.5,408 !642,389 647,372', { a: .55 }),
+      f({ rg: [646, 315, 0, 8], st: [[0, C.goldHi], [0.5, C.gold], [1, C.goldSh]] }, ell(648, 317, 6.6, 6.6), { s: C.goldLine, w: 2.2 }),
+    ],
+  });
+
+  /* front hair */
+  add('hairSideR', 'head', {
+    z: 0.05, ops: ['bend'], bend: [{ k: 'HairSideR', x: 640, y: 90, len: 175, amp: 6, pow: 1.5 }],
+    base: f(C.hair, '!758,5 708,18 662,50 613,100 588,155 584,192 597,232 !610,264 621,241 631,214 641,198 !671,190 !651,183 !676,173 !657,166 668,153 !696,158 !682,147 !706,151 701,100 ~!695,54 ~722,24', { s: C.hairLine, w: LW }),
+    inner: [
+      f(C.hairHi, '606,142 630,100 666,74 !688,84 !676,97 !664,90 !652,113 !640,106 !628,137 !618,131 !612,160'),
+      f(C.hairSh, '584,192 597,232 610,264 621,241 612,226 604,196 606,160 590,165', { a: .8 }),
+    ],
+    over: [
+      l(C.hairLine, 2.2, '652,62 678,72 698,90'), l(C.hairLine, 2.2, '676,102 688,104 697,108'),
+      l(C.hairLine, 2.2, '604,190 606,225 610,256', { tp: [.4, .1] }), l(C.hairLine, 2.2, '627,180 621,206 613,238', { tp: [.4, .15] }),
+    ],
+  });
+  const lockBend = [{ k: 'HairFront', x: 745, y: 30, len: 130, amp: 2.4, pow: 1.5 }, { k: 'HairSideL', x: 885, y: 110, len: 300, amp: 7, pow: 1.6 }];
+  add('bangMain', 'head', {
+    z: 0.07, ops: ['bend'], bend: lockBend,
+    base: f(C.hair, '~!695,54 ~722,24 758,5 812,13 860,39 904,82 934,132 947,184 945,238 938,292 932,340 922,370 906,396 !893,404 !876,404 862,392 850,372 843,345 836,291 825,236 814,191 802,160 !773,123 752,131 724,144 !706,151 701,100', { s: C.hairLine, w: LW }),
+    inner: [
+      f(C.hairSh, '780,106 800,134 813,170 824,236 835,291 842,345 850,372 862,392 870,382 859,345 853,291 843,236 831,176 816,140 798,112'),
+      f(C.hairHi, '722,84 770,70 830,78 880,105 !918,150 !912,172 !904,148 !892,160 !879,127 !862,141 !849,107 !828,122 !814,95 !792,110 !774,89 !752,104 !739,91 !727,100'),
+      f(C.hairHi2, '906,96 930,140 941,190 939,250 !933,292 934,240 933,190 921,140', { a: .8 }),
+      f(C.hairSh, '906,396 922,370 932,340 938,300 926,330 912,362 894,392 884,404', { a: .7 }),
+    ],
+    over: [
+      l(C.hairLine, 2.2, '736,62 721,100 708,136', { tp: [.4, .15] }), l(C.hairLine, 2.2, '779,100 798,128 812,166', { tp: [.4, .15] }),
+      l(C.hairLine, 2.2, '851,248 856,310 859,376', { tp: [.5, .15] }), l(C.hairLine, 2.2, '904,296 905,340 901,378', { tp: [.5, .15] }),
+    ],
+  });
+  const tailStage = lockBend.concat([{ k: 'HairTail', x: 884, y: 412, len: 150, amp: 15, pow: 1.2 }]);
+  add('lockTail', 'head', {
+    zm: 1, z: 0.52, ops: ['bend'], bend: tailStage,
+    base: f(C.hair, '!874,424 868,455 862,478 850,506 !828,539 847,531 !843,547 862,541 !879,562 895,549 !904,565 908,540 912,500 909,455 !903,424', { s: C.hairLine, w: LW }),
+    inner: [
+      f(C.red, '!846,480 !866,491 !877,469 !888,488 !897,469 !907,486 !919,471 926,582 815,582'),
+      f(C.redSh, '905,482 914,500 910,545 904,566 898,548 902,510'),
+      f(C.hairSh, '903,424 909,455 912,476 902,470 899,440', { a: .8 }),
+    ],
+    over: [l(C.hairLine, 2, '887,430 884,446 882,462'), l(C.redLine, 2, '896,480 892,496 887,510'), l(C.redLine, 2, '872,498 862,514 852,528')],
+  });
+  add('bell', 'head', {
+    zm: 1, z: 0.52, ops: ['bend'], bend: tailStage,
+    base: f({ rg: [879, 406, 1, 20], st: [[0, '#fff4b8'], [0.35, C.gold], [1, C.goldSh]] }, ell(884, 412, 15, 15), { s: C.goldLine, w: 2.8 }),
+    over: [l(C.goldLine, 2.6, '873,417 884,420.5 895,417', { tp: [.15, .15] }), f(C.goldLine, ell(884, 424.5, 2.3, 3.2))],
+  });
+
+  /* ============ creature: front (draped over her right shoulder) ============ */
+  add('creaFront', 'att', {
+    ops: ['fur'], fur: { amp: 1.5, sp: 2.1, puff: 7 },
+    base: f(C.fur, fur('556,438 620,444 676,452 694,484 692,540 682,574 644,566 612,588 578,642 532,652 490,634 502,560 528,500', { step: 28, h: 17, seed: 23, flow: [0.1, 0.6], skip: [[12, 13], [0, 2]] }), { s: C.furLine, w: LW }),
+    inner: [f(C.furSh, '640,540 700,520 700,600 560,680 480,650 520,600 580,600', { a: .8 })],
+    over: [l(C.furSh2, 3, '600,500 622,516 630,544'), l(C.furSh2, 3, '560,560 580,580 584,608'), l(C.furSh2, 3, '644,486 660,500 664,524')],
+  });
+  add('creaPaw', 'att', {
+    base: f(C.fur, '~640,522 652,508 672,505 688,514 695,532 690,550 676,558 660,555 ~648,545', { s: C.furLine, w: 2.8 }),
+    inner: [f(C.furSh, '650,545 664,550 690,538 696,560 650,562', { a: .8 })],
+    over: [l(C.furLine, 2.2, '667,546 668,552 667,557', { tp: [.1, .3] }), l(C.furLine, 2.2, '680,541 683,547 683,553', { tp: [.1, .3] })],
+  });
+
+  /* ============ creature head ============ */
+  add('creaHead', 'creaHead', {
+    ops: ['fur'], fur: { amp: 1.7, sp: 2.4, puff: 8 },
+    base: f(C.fur, fur('488,262 536,282 572,326 592,384 600,442 584,496 560,516 554,578 506,592 454,568 416,596 384,556 352,520 342,452 332,396 346,340 396,288 440,268', { step: 34, h: 22, seed: 3, flow: [0, 0.3] }), { s: C.furLine, w: LW }),
+    inner: [
+      f(C.furSh, '340,500 400,548 470,566 540,548 600,480 610,600 330,610', { a: .85 }),
+      f({ rg: [412, 492, 0, 22], st: [[0, 'rgba(255,150,165,.5)'], [1, 'rgba(255,150,165,0)']] }, ell(412, 492, 24, 15)),
+      f({ rg: [546, 466, 0, 20], st: [[0, 'rgba(255,150,165,.5)'], [1, 'rgba(255,150,165,0)']] }, ell(546, 466, 22, 14)),
+    ],
+    over: [
+      l(C.furLine, 2.6, '374,372 381,360 393,358', { z: .4 }), l(C.furLine, 2.6, '362,402 368,390 380,386', { z: .4 }), l(C.furLine, 2.6, '366,432 370,420 378,414', { z: .4 }),
+      l(C.furLine, 2.6, '404,342 412,360 408,376', { z: .5 }), l(C.furLine, 2.6, '432,352 442,360 446,372', { z: .5 }),
+      l(C.furLine, 2.6, '462,340 474,326 488,318', { z: .5 }), l(C.furLine, 2.6, '500,330 506,342 504,356', { z: .5 }), l(C.furLine, 2.6, '522,340 532,336 544,340', { z: .5 }),
+      l(C.furLine, 2.6, '538,360 552,366 560,380', { z: .4 }), l(C.furLine, 2.6, '552,398 562,410 562,424', { z: .4 }),
+      l(C.furLine, 2.4, '410,486 414,500 420,494 426,506', { z: .8 }),
+    ],
+  });
+  add('creaMarks', 'creaHead', {
+    z: 0.85,
+    over: [f('#e9c62c', ell(457, 432, 3.6, 6.6, 8, -0.15), { s: '#8a6a10', w: 1.6 }), f('#e9c62c', ell(484, 427, 3.2, 6, 8, -0.1), { s: '#8a6a10', w: 1.6 })],
+  });
+  const ceye = (id, cx, cy, pts, px, py) => add(id, 'creaHead', {
+    z: 1, ops: ['cblink'], cb: [cx, cy, -0.2],
+    base: f({ lg: [cx, cy - 26, cx, cy + 26], st: [[0, '#2f398f'], [0.6, '#5665c4'], [1, '#7f90e6']] }, pts, { s: '#1a1d47', w: 3.6 }),
+    inner: [
+      f('#191d55', ell(px, py, 7.5, 9.5)), f('rgba(170,190,255,.55)', ell(cx, cy + 15, 17, 7)),
+      f('#ffffff', ell(cx - 9, cy - 10, 6.5, 4.8, 8, -0.3)), f('#ffffff', ell(cx + 10, cy + 9, 2.6, 2.6), { a: .9 }),
+    ],
+  });
+  ceye('creaEyeR', 427, 456, '!397,456 408,440 428,432 447,438 456,455 447,472 427,480 408,472', 434, 457);
+  ceye('creaEyeL', 514, 437, '490,440 496,421 514,413 532,419 540,437 533,456 514,462 497,456', 519, 440);
+  add('creaMouth', 'creaHead', {
+    z: 1, ops: ['cmouth'], cm: [457, 480, 500, 468],
+    base: f('#b8323c', '!457,480 478,474 !500,468 497,484 481,495 464,491', { s: '#3a2233', w: 3 }),
+    inner: [f('#f09aa2', ell(482, 494, 13, 6))],
+    over: [l('#3a3552', 2.8, '427,495 450,505 480,508 520,494 546,473', { tp: [.3, .25] })],
+  });
+
+  return M;
+};
+G.ART_COLORS = C;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* =====================================================================
+ * driver.js — what moves the parameters every frame (no DOM in here):
+ * idle breathing and sway, gaze tracking, blinking, expressions,
+ * motions, talking, the companion's behaviour, locks and physics.
+ * ===================================================================== */
+(function (G) {
+'use strict';
+const Rig = G.Rig, clamp = Rig.clamp, lerp = Rig.lerp, TAU = Math.PI * 2;
+
+const EXPR = {
+  normal: { label: '通常', set: {} },
+  smile: { label: 'にっこり', set: { EyeSmile: 1, EyeLOpen: 0, EyeROpen: 0, MouthForm: 1, MouthOpen: 0.3, Cheek: 0.55, BrowLY: 0.25, BrowRY: 0.25 } },
+  surprise: { label: 'びっくり', set: { EyeLOpen: 1.3, EyeROpen: 1.3, BrowLY: 1, BrowRY: 1, MouthForm: -0.35, MouthOpen: 0.55 } },
+  angry: { label: 'むっ', set: { BrowAngle: 1, BrowLY: -0.45, BrowRY: -0.45, EyeLOpen: 0.82, EyeROpen: 0.82, MouthForm: -0.85, Cheek: 0.3 } },
+  sad: { label: 'しょんぼり', set: { BrowAngle: -1, BrowLY: 0.25, BrowRY: 0.25, EyeLOpen: 0.68, EyeROpen: 0.68, MouthForm: -0.6 }, add: { EyeBallY: -0.45, AngleY: -8 } },
+  shy: { label: '照れ', set: { Cheek: 1, EyeSmile: 0.55, EyeLOpen: 0.78, EyeROpen: 0.78, MouthForm: 0.65, BrowAngle: -0.45 }, add: { EyeBallX: 0.55, EyeBallY: -0.25, AngleZ: -6 } },
+  wink: { label: 'ウインク', set: { EyeLOpen: 0, EyeSmile: 0.75, MouthForm: 1, MouthOpen: 0.32, Cheek: 0.35, BrowLY: -0.15, BrowRY: 0.45 }, add: { AngleZ: 7 } },
+};
+// additive keyframe tracks: [time(s), value]
+const MOTION = {
+  nod: { label: 'うなずく', dur: 1.15, tr: { AngleY: [[0, 0], [0.2, -24], [0.45, 6], [0.68, -17], [0.92, 2], [1.15, 0]], BodyY: [[0, 0], [0.22, 3.5], [0.48, 0], [0.7, 2.2], [1.15, 0]] } },
+  tilt: { label: '首をかしげる', dur: 1.9, tr: { AngleZ: [[0, 0], [0.38, 19], [1.4, 19], [1.9, 0]], AngleX: [[0, 0], [0.38, 7], [1.4, 7], [1.9, 0]], BodyZ: [[0, 0], [0.45, -3.5], [1.4, -3.5], [1.9, 0]], BrowLY: [[0, 0], [0.3, 0.7], [1.4, 0.7], [1.9, 0]], BrowRY: [[0, 0], [0.3, 0.7], [1.4, 0.7], [1.9, 0]] } },
+  bow: { label: 'おじぎ', dur: 2.1, tr: { BodyY: [[0, 0], [0.55, 10], [1.3, 10], [2.1, 0]], AngleY: [[0, 0], [0.55, -28], [1.3, -28], [2.1, 0]], EyeLOpen: [[0, 0], [0.4, -1], [1.4, -1], [1.8, 0]], EyeROpen: [[0, 0], [0.4, -1], [1.4, -1], [1.8, 0]], ArmR: [[0, 0], [0.55, -8], [1.3, -8], [2.1, 0]], ArmL: [[0, 0], [0.55, -8], [1.3, -8], [2.1, 0]] } },
+  sway: { label: 'ゆらゆら', dur: 3.6, tr: { BodyZ: [[0, 0], [0.45, 8.5], [1.3, -8.5], [2.15, 8.5], [3.0, -6], [3.6, 0]], AngleZ: [[0, 0], [0.6, -10], [1.45, 10], [2.3, -10], [3.1, 6], [3.6, 0]], BodyX: [[0, 0], [0.45, 4], [1.3, -4], [2.15, 4], [3.0, -3], [3.6, 0]], ArmR: [[0, 0], [0.5, 7], [3.0, 7], [3.6, 0]], ArmL: [[0, 0], [0.5, 7], [3.0, 7], [3.6, 0]] }, expr: 'smile' },
+  wave: { label: '手をふる', dur: 2.8, tr: { ArmR: [[0, 0], [0.35, 25], [2.3, 25], [2.8, 0]], ElbowR: [[0, 0], [0.35, 30], [0.6, 4], [0.85, 33], [1.1, 4], [1.35, 33], [1.6, 4], [1.85, 30], [2.3, 12], [2.8, 0]], AngleZ: [[0, 0], [0.35, -9], [2.3, -9], [2.8, 0]], BodyZ: [[0, 0], [0.4, 3], [2.3, 3], [2.8, 0]] }, expr: 'smile' },
+  pat: { label: '頭をなでる', dur: 1.7, tr: { AngleY: [[0, 0], [0.22, -10], [1.35, -10], [1.7, 0]], AngleZ: [[0, 0], [0.3, 5], [0.6, -5], [0.9, 5], [1.2, -4], [1.7, 0]], BodyY: [[0, 0], [0.22, 2.5], [1.35, 2.5], [1.7, 0]] }, expr: 'smile' },
+  pet: { label: '相棒をなでる', dur: 1.5, tr: { CrPuff: [[0, 0], [0.16, 1], [0.5, 0.3], [0.8, 0.75], [1.1, 0.2], [1.5, 0]], CrTilt: [[0, 0], [0.2, 0.9], [0.55, -0.7], [0.9, 0.6], [1.5, 0]], CrMouth: [[0, 0], [0.15, 0.45], [1.2, 0.45], [1.5, 0]], CrEyeOpen: [[0, 0], [0.15, -1], [1.1, -1], [1.4, 0]] } },
+};
+function track(tr, t) {
+  if (t <= tr[0][0]) return tr[0][1];
+  for (let i = 1; i < tr.length; i++) if (t <= tr[i][0]) { const a = tr[i - 1], b = tr[i]; let u = (t - a[0]) / (b[0] - a[0]); u = u * u * (3 - 2 * u); return a[1] + (b[1] - a[1]) * u; }
+  return tr[tr.length - 1][1];
+}
+// smoothing rate (1/s) per parameter family
+const RATE = (k) => (k.indexOf('EyeBall') === 0 ? 15 : k.indexOf('Eye') === 0 || k.indexOf('Brow') === 0 || k.indexOf('Mouth') === 0 ? 13 : k.indexOf('Angle') === 0 ? 7.5 : k.indexOf('Cr') === 0 ? 9 : k === 'Breath' ? 30 : k === 'Cheek' ? 5 : 5);
+
+// while the camera is driving, the face follows more tightly
+const BOOST = (k) => (k.indexOf('Mouth') === 0 || k.indexOf('Eye') === 0 ? 2.2 : k.indexOf('Angle') === 0 ? 1.6 : k.indexOf('Brow') === 0 ? 1 : k.indexOf('Body') === 0 ? 1.2 : 0);
+
+function createDriver(M) {
+  const P = M.P, DEF = {}, MIN = {}, MAX = {}, OUT = {};
+  for (const p of Rig.PARAMS) { DEF[p[0]] = p[4]; MIN[p[0]] = p[2]; MAX[p[0]] = p[3]; }
+  for (const p of Rig.PHYS) OUT[p.out] = true;
+  const KEYS = Rig.PARAMS.map((p) => p[0]).filter((k) => !OUT[k]);
+  const S = { track: true, blink: true, breath: true, phys: true, idle: true, talk: false, wind: 0.6 };
+  const Sm = Object.assign({}, DEF), tgt = {}, lock = {}, exW = {};
+  for (const k in EXPR) exW[k] = k === 'normal' ? 1 : 0;
+  const D = { S, lock, EXPR, MOTION, expr: 'normal', flash: null, flashEnd: 0, T: 0, ptr: { x: 0, y: 0, on: false, t: -99 }, motions: [], happy: 0, face: null, faceT: -99, fw: 0 };
+  // camera tracking: additive on the head/body/gaze, absolute on the face itself
+  const FACE_ADD = ['AngleX', 'AngleY', 'AngleZ', 'BodyX', 'BodyY', 'BodyZ', 'EyeBallX', 'EyeBallY'];
+  const FACE_SET = ['EyeLOpen', 'EyeROpen', 'EyeSmile', 'BrowLY', 'BrowRY', 'BrowAngle', 'MouthOpen', 'MouthForm', 'Cheek'];
+  const wander = { x: 0, y: 0, next: 0 }, cw = { x: 0, y: 0, next: 0 };
+  let blink = { next: 1.6, t: -1, dbl: false }, cblink = { next: 2.7, t: -1 };
+  let rnd = 12345; const R = () => { rnd = (rnd * 1664525 + 1013904223) >>> 0; return rnd / 4294967296; };
+  const blinkVal = (t) => (t < 0 ? 1 : t < 0.07 ? 1 - t / 0.07 : t < 0.11 ? 0 : t < 0.26 ? (t - 0.11) / 0.15 : 1);
+
+  D.setExpr = (k) => { if (EXPR[k]) D.expr = k; };
+  D.flashExpr = (k, dur) => { D.flash = k; D.flashEnd = D.T + dur; };
+  D.play = (k) => { const m = MOTION[k]; if (!m) return; D.motions = D.motions.filter((x) => x.k !== k); D.motions.push({ k, m, t0: D.T }); if (m.expr) D.flashExpr(m.expr, m.dur - 0.25); };
+  D.pointer = (x, y, on) => { D.ptr.x = x; D.ptr.y = y; D.ptr.on = on; if (on) D.ptr.t = D.T; };
+  D.reset = () => { for (const k in lock) delete lock[k]; };
+  D.setFace = (v) => { D.face = v; D.faceT = D.T; };
+  D.clearFace = () => { D.face = null; };
+
+  D.step = function (dt) {
+    const T = (D.T += dt);
+    for (const k of KEYS) tgt[k] = DEF[k];
+    // --- camera tracking weight: eases in when a face result is fresh, out when it is lost
+    const face = D.face && T - D.faceT < 0.6 ? D.face : null;
+    const fw = (D.fw = lerp(D.fw, face ? 1 : 0, 1 - Math.exp(-dt * (face ? 8 : 3))));
+    const ik = 1 - 0.7 * fw;                 // idle sway is toned down while the camera drives her
+    // --- idle
+    if (S.breath) tgt.Breath = 0.5 - 0.5 * Math.cos(T * TAU / 3.9);
+    if (S.idle) {
+      tgt.BodyZ += (Math.sin(T * 0.55) * 1.5 + Math.sin(T * 0.23 + 1) * 0.9) * ik;
+      tgt.BodyX += Math.sin(T * 0.31 + 0.4) * 1.2 * ik;
+      tgt.AngleZ += Math.sin(T * 0.47 + 0.6) * 2.4 * ik;
+      tgt.AngleX += Math.sin(T * 0.21 + 2) * 2 * ik;
+      tgt.AngleY += Math.sin(T * 0.4) * 1.6 * ik;
+      tgt.ArmR += Math.sin(T * 0.52 + 1) * 1.6; tgt.ArmL += Math.sin(T * 0.52 + 2.2) * 1.6;
+      tgt.ElbowR += Math.sin(T * 0.44 + 0.3) * 2; tgt.ElbowL += Math.sin(T * 0.44 + 1.7) * 2;
+    }
+    // --- gaze
+    let gx = 0, gy = 0;
+    const tracking = S.track && D.ptr.on && T - D.ptr.t < 5 && fw < 0.5;
+    if (tracking) {
+      const h = M.point('head', 758, 235);
+      gx = clamp((D.ptr.x - h[0]) / 430, -1, 1); gy = clamp(-(D.ptr.y - h[1]) / 430, -1, 1);
+    } else if (S.idle) {
+      if (T > wander.next) { const far = R() < 0.3; wander.x = (R() - 0.5) * (far ? 1.2 : 0.5); wander.y = (R() - 0.5) * (far ? 0.6 : 0.25); wander.next = T + 1.6 + R() * 3.4; }
+      gx = wander.x; gy = wander.y;
+    }
+    gx *= 1 - fw; gy *= 1 - fw;
+    tgt.AngleX += gx * 25; tgt.AngleY += gy * 21; tgt.AngleZ += -gx * gy * 7;
+    tgt.EyeBallX += gx * 0.95; tgt.EyeBallY += gy * 0.95;
+    tgt.BodyX += gx * 5; tgt.BodyZ += gx * 1.6;
+    // --- camera tracking
+    const fv = D.face;
+    if (fv && fw > 0.002) {
+      for (const k of FACE_ADD) tgt[k] += fv[k] * fw;
+      for (const k of FACE_SET) tgt[k] = lerp(tgt[k], fv[k], fw);
+    }
+    // --- companion
+    let cx = 0, cy = 0, near = 0;
+    if (tracking) {
+      const c = M.point('crea', 470, 440), dx = D.ptr.x - c[0], dy = D.ptr.y - c[1];
+      cx = clamp(dx / 380, -1, 1); cy = clamp(-dy / 380, -1, 1);
+      near = clamp(1 - Math.hypot(dx, dy) / 260, 0, 1);
+    } else if (S.idle) {
+      if (T > cw.next) { cw.x = (R() - 0.3) * 1.3; cw.y = (R() - 0.4) * 0.9; cw.next = T + 1.2 + R() * 3; }
+      cx = cw.x; cy = cw.y;
+    }
+    if (fv && fw > 0.5) near = Math.max(near, clamp((fv.smile - 0.45) * 2.2, 0, 1));   // the companion brightens when you smile
+    D.happy = lerp(D.happy, near, 1 - Math.exp(-dt * 5));
+    tgt.CrLookX = cx; tgt.CrLookY = cy;
+    tgt.CrTilt = (S.idle ? Math.sin(T * 0.7 + 1.3) * 0.25 : 0) + cx * 0.3;
+    tgt.CrMouth = DEF.CrMouth - 0.25 + D.happy * 0.7 + (S.idle ? Math.sin(T * 0.9) * 0.08 : 0);
+    tgt.CrPuff = D.happy * 0.25;
+    // --- expressions (weights ease in and out)
+    const cur = D.flash && T < D.flashEnd ? D.flash : D.expr;
+    if (D.flash && T >= D.flashEnd) D.flash = null;
+    for (const k in EXPR) {
+      exW[k] = lerp(exW[k], k === cur ? 1 : 0, 1 - Math.exp(-dt * 9));
+      const w = exW[k]; if (w < 0.002) continue;
+      const e = EXPR[k];
+      for (const p in e.set) tgt[p] = lerp(tgt[p], e.set[p], w);
+      if (e.add) for (const p in e.add) tgt[p] += e.add[p] * w;
+    }
+    // --- motions
+    for (let i = D.motions.length - 1; i >= 0; i--) {
+      const mo = D.motions[i], t = T - mo.t0;
+      if (t > mo.m.dur) { D.motions.splice(i, 1); continue; }
+      for (const p in mo.m.tr) tgt[p] += track(mo.m.tr[p], t);
+    }
+    // --- talking (pseudo lip-sync)
+    if (S.talk && fw < 0.5) {
+      const syl = Math.max(0, Math.sin(T * 13.5) * 0.5 + Math.sin(T * 7.3 + 1) * 0.35 + 0.35), gate = Math.sin(T * 1.1) > -0.55 ? 1 : 0;
+      tgt.MouthOpen = Math.max(tgt.MouthOpen, clamp(syl * gate, 0, 0.95));
+    }
+    // --- smooth towards targets
+    for (const k of KEYS) {
+      const v = clamp(tgt[k], MIN[k], MAX[k]);
+      Sm[k] += (v - Sm[k]) * (1 - Math.exp(-dt * RATE(k) * (1 + fw * BOOST(k))));
+      P[k] = Sm[k];
+    }
+    // --- blinking
+    if (S.blink) {
+      if (blink.t < 0 && T > blink.next) { blink.t = 0; }
+      if (blink.t >= 0) { blink.t += dt; if (blink.t > 0.27) { blink.t = -1; if (!blink.dbl && R() < 0.18) { blink.dbl = true; blink.next = T + 0.08; } else { blink.dbl = false; blink.next = T + 1.8 + R() * 4.2; } } }
+      const b = fw > 0.5 ? 1 : blinkVal(blink.t); P.EyeLOpen *= b; P.EyeROpen *= b;      // with the camera on, your own blinks drive hers
+      if (cblink.t < 0 && T > cblink.next) cblink.t = 0;
+      if (cblink.t >= 0) { cblink.t += dt; if (cblink.t > 0.3) { cblink.t = -1; cblink.next = T + 1.5 + R() * 4; } }
+      P.CrEyeOpen *= blinkVal(cblink.t * 0.9);
+    }
+    P.CrEyeOpen = clamp(P.CrEyeOpen, 0, 1);
+    // --- manual locks, then physics
+    for (const k in lock) P[k] = lock[k];
+    if (S.phys) M.phys.step(P, dt, S.wind);
+    else for (const k in OUT) P[k] = 0;
+    for (const k in lock) if (OUT[k]) P[k] = lock[k];
+  };
+  // run the simulation forward so the first frame is already settled
+  D.warm = (sec) => { for (let i = 0; i < sec * 60; i++) { D.step(1 / 60); } M.update(D.T); };
+  return D;
+}
+G.createDriver = createDriver;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* =====================================================================
+ * solve.js — turns one face-tracking result into rig parameter targets.
+ * Input: the 52 blendshape scores and the 4x4 facial transformation
+ * matrix from MediaPipe FaceLandmarker. No DOM in here.
+ * "Left/Right" in blendshape names are the tracked person's left/right.
+ * ===================================================================== */
+(function (G) {
+'use strict';
+const R2D = 180 / Math.PI;
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const remap = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
+
+// One Euro filter: steady when still, quick when moving
+function OneEuro(minCut, beta) { this.mc = minCut; this.beta = beta; this.t = null; this.x = 0; this.dx = 0; }
+OneEuro.prototype.f = function (x, t) {
+  if (this.t == null) { this.t = t; this.x = x; this.dx = 0; return x; }
+  const dt = Math.max(1e-3, t - this.t); this.t = t;
+  const al = (cut) => 1 / (1 + 1 / (2 * Math.PI * cut * dt));
+  this.dx += al(1) * ((x - this.x) / dt - this.dx);
+  this.x += al(this.mc + this.beta * Math.abs(this.dx)) * (x - this.x);
+  return this.x;
+};
+OneEuro.prototype.reset = function () { this.t = null; };
+
+// head pose (degrees) and position (cm) from the column-major 4x4 matrix.
+// camera space: +x right in the image, +y up, +z towards the camera.
+function pose(m) {
+  const fx = m[8], fy = m[9], fz = m[10], ux = m[4], uy = m[5];
+  return {
+    yaw: Math.atan2(fx, fz) * R2D,                    // + = face turned towards image-right
+    pitch: Math.atan2(fy, Math.hypot(fx, fz)) * R2D,  // + = looking up
+    roll: Math.atan2(ux, uy) * R2D,                   // + = top of the head tilted towards image-right
+    tx: m[12], ty: m[13], tz: m[14],
+  };
+}
+
+function createSolver() {
+  const cfg = { mirror: true, head: 1, blink: 0, mouth: 1 };
+  const F = { yaw: new OneEuro(1.1, 0.012), pitch: new OneEuro(1.1, 0.012), roll: new OneEuro(1.1, 0.012), tx: new OneEuro(0.7, 0.03), ty: new OneEuro(0.7, 0.03) };
+  let base = null, acc = null;
+  const sm = {};
+  const ema = (k, v, a) => (sm[k] = sm[k] == null ? v : sm[k] + (v - sm[k]) * a);
+  const S = { cfg, pose };
+  // take the next few frames as "facing the screen"
+  const CAL = ['yaw', 'pitch', 'roll', 'tx', 'ty', 'gx', 'gy'];
+  S.calibrate = () => { acc = { n: 0 }; for (const k of CAL) acc[k] = 0; };
+  S.reset = () => { base = null; acc = null; for (const k in F) F[k].reset(); for (const k in sm) delete sm[k]; S.calibrate(); };
+  S.calibrated = () => !!base;
+  S.solve = function (bs, m, t) {
+    const p = pose(m), g = (k) => bs[k] || 0;
+    // raw gaze: + = towards the person's own right / up
+    p.gx = ((g('eyeLookInLeft') + g('eyeLookOutRight')) - (g('eyeLookOutLeft') + g('eyeLookInRight'))) / 2;
+    p.gy = (g('eyeLookUpLeft') + g('eyeLookUpRight') - g('eyeLookDownLeft') - g('eyeLookDownRight')) / 2;
+    if (acc) {
+      for (const k of CAL) acc[k] += p[k];
+      if (++acc.n >= 10) { base = {}; for (const k of CAL) base[k] = acc[k] / acc.n; acc = null; }
+      else if (!base) return null;
+    }
+    const s = cfg.mirror ? -1 : 1, h = cfg.head;
+    const yaw = F.yaw.f(p.yaw - base.yaw, t), pitch = F.pitch.f(p.pitch - base.pitch, t), roll = F.roll.f(p.roll - base.roll, t);
+    const dx = F.tx.f(p.tx - base.tx, t), dy = F.ty.f(p.ty - base.ty, t);
+    const v = {};
+    v.AngleX = clamp(s * yaw * 1.0 * h, -30, 30);
+    v.AngleY = clamp(pitch * 1.3 * h, -30, 30);
+    v.AngleZ = clamp(s * roll * 1.3 * h, -30, 30);
+    v.BodyX = clamp(v.AngleX * 0.3, -10, 10);
+    v.BodyZ = clamp(v.AngleZ * 0.3 + s * dx * 0.5 * h, -10, 10);
+    v.BodyY = clamp(-dy * 0.5 * h, -4, 8);
+
+    // --- eyes
+    const bl = g('eyeBlinkLeft'), br = g('eyeBlinkRight');
+    const lo = 0.22 + cfg.blink * 0.12, hi = lo + 0.33;
+    let oL = 1 - remap(bl, lo, hi), oR = 1 - remap(br, lo, hi);
+    if (Math.abs(bl - br) < 0.22) oL = oR = (oL + oR) / 2;          // only split the eyes for a clear wink
+    oL += remap(g('eyeWideLeft'), 0.3, 0.8) * 0.28; oR += remap(g('eyeWideRight'), 0.3, 0.8) * 0.28;
+    oL = ema('oL', oL, 0.7); oR = ema('oR', oR, 0.7);
+    if (oL < 0.12) oL = 0; if (oR < 0.12) oR = 0;
+    // --- gaze, relative to where the eyes rested during calibration
+    const open = Math.min(1, oL, oR);
+    const gx = ema('gx', p.gx - base.gx, 0.4), gy = ema('gy', (p.gy - base.gy) * open, 0.4);
+    v.EyeBallX = clamp(-s * gx * 1.9, -1, 1);
+    v.EyeBallY = clamp(gy * 1.7, -1, 1);
+    // --- brows
+    const bIn = g('browInnerUp'), dnL = g('browDownLeft'), dnR = g('browDownRight');
+    const bwL = ema('bwL', clamp(g('browOuterUpLeft') * 1.3 + bIn * 0.8 - dnL * 1.3, -1, 1), 0.35);
+    const bwR = ema('bwR', clamp(g('browOuterUpRight') * 1.3 + bIn * 0.8 - dnR * 1.3, -1, 1), 0.35);
+    v.BrowAngle = ema('ba', clamp((dnL + dnR) * 0.9 - bIn * 0.8, -1, 1), 0.35);
+    // --- mouth
+    const smile = (g('mouthSmileLeft') + g('mouthSmileRight')) / 2, frown = (g('mouthFrownLeft') + g('mouthFrownRight')) / 2;
+    v.MouthOpen = ema('mo', clamp(remap(g('jawOpen'), 0.04, 0.5) * cfg.mouth, 0, 1), 0.65);
+    v.MouthForm = ema('mf', clamp(0.25 + smile * 1.5 - frown * 2 - g('mouthPucker') * 0.5 - g('mouthFunnel') * 0.4, -1, 1), 0.4);
+    v.EyeSmile = ema('es', remap(smile, 0.5, 0.85), 0.4);
+    v.Cheek = ema('ck', remap(smile, 0.55, 0.95) * 0.5, 0.2);
+    v.smile = smile;
+    // mirror: her eye on the viewer's right copies the person's right eye
+    if (cfg.mirror) { v.EyeLOpen = oR; v.EyeROpen = oL; v.BrowLY = bwR; v.BrowRY = bwL; }
+    else { v.EyeLOpen = oL; v.EyeROpen = oR; v.BrowLY = bwL; v.BrowRY = bwR; }
+    return v;
+  };
+  S.calibrate();
+  return S;
+}
+G.createSolver = createSolver;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* =====================================================================
+ * tracker.js — webcam -> MediaPipe FaceLandmarker -> solver -> driver.
+ * Everything runs inside this page; no video leaves the browser.
+ * The recognition runtime and model are fetched once and kept in
+ * IndexedDB so later starts work without the network.
+ * ===================================================================== */
+(function (G) {
+'use strict';
+const MP_VER = '1.1.1';
+const MP_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@' + MP_VER;
+const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+// The addresses above are fixed: nothing in the page address can redirect them, because this
+// page holds the camera permission. The three runtime files are also checked against the
+// SHA-256 of the official npm package before any of their code runs (network or cache).
+const MP_SHA = {
+  '/vision_bundle.mjs': 'a84921e02321e582484c1f8126d344b5f33b791fa09c640a52e20ee8632068f1',
+  '/wasm/vision_wasm_internal.js': '6522286aa32dd93eff17c3da002b0649516f87abfec7a80b5bfe5c9625caa5f8',
+  '/wasm/vision_wasm_internal.wasm': '0e101a010e262ef8e78f22e3c95b60a9705fd06962753c9acd6356d9fb56b7bd',
+};
+
+function createTracker(D, opt) {
+  opt = opt || {};
+  const solver = G.createSolver();
+  const video = document.createElement('video');
+  video.muted = true; video.playsInline = true; video.setAttribute('playsinline', '');
+  // The camera picture is never shown. This element only feeds frames to the recogniser:
+  // fully transparent, 2px, and kept in the page (not display:none) so frames keep arriving.
+  video.setAttribute('aria-hidden', 'true');
+  video.style.cssText = 'position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none';
+  document.body.appendChild(video);
+  const T = { state: 'idle', msg: '', fps: 0, solver, video, stream: null, onchange: null, last: null };
+  let lm = null, loading = null, running = false, lastRun = 0, wd = 0, frames = 0, fpsT = 0, lost = 0, gen = 0;
+  const set = (state, msg) => { T.state = state; T.msg = msg || ''; if (T.onchange) T.onchange(T); };
+
+  /* ----- small IndexedDB cache for the runtime and model ----- */
+  function openDb() {
+    return new Promise((res, rej) => {
+      let r; try { r = indexedDB.open('aigami-vtuber', 1); } catch (e) { rej(e); return; }
+      r.onupgradeneeded = () => r.result.createObjectStore('files');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); r.onblocked = () => rej(new Error('blocked'));
+    });
+  }
+  async function matches(bytes, want) {
+    if (!want || !(G.crypto && G.crypto.subtle)) return true;     // no hash to compare, or no crypto in this context
+    const d = new Uint8Array(await G.crypto.subtle.digest('SHA-256', bytes));
+    let hex = ''; for (let i = 0; i < d.length; i++) hex += (d[i] < 16 ? '0' : '') + d[i].toString(16);
+    return hex === want;
+  }
+  async function cached(url, want) {
+    let db = null;
+    try {
+      db = await openDb();
+      const hit = await new Promise((res, rej) => { const g = db.transaction('files').objectStore('files').get(url); g.onsuccess = () => res(g.result); g.onerror = () => rej(g.error); });
+      if (hit && hit.byteLength > 1000) { const b = new Uint8Array(hit); if (await matches(b, want)) return b; }   // a stale or altered copy is refetched
+    } catch (e) { db = null; }
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(r.status + ' ' + url);
+    const buf = await r.arrayBuffer(), bytes = new Uint8Array(buf);
+    if (!(await matches(bytes, want))) throw new Error('配信元のファイルが想定した内容と一致しません: ' + url);
+    if (db) { try { db.transaction('files', 'readwrite').objectStore('files').put(buf, url); } catch (e) { /* cache is best-effort */ } }
+    return bytes;
+  }
+  const rt = (path) => cached(MP_CDN + path, MP_SHA[path]);
+  async function load() {
+    const [mjs, ljs, wasm, model] = await Promise.all([
+      rt('/vision_bundle.mjs'), rt('/wasm/vision_wasm_internal.js'), rt('/wasm/vision_wasm_internal.wasm'), cached(MODEL_URL)]);
+    const blob = (bytes, type) => URL.createObjectURL(new Blob([bytes], { type }));
+    const vision = await import(blob(mjs, 'text/javascript'));
+    const fileset = { wasmLoaderPath: blob(ljs, 'text/javascript'), wasmBinaryPath: blob(wasm, 'application/wasm') };
+    lm = await vision.FaceLandmarker.createFromOptions(fileset, {
+      baseOptions: { modelAssetBuffer: model, delegate: opt.delegate === 'GPU' ? 'GPU' : 'CPU' },
+      runningMode: 'VIDEO', numFaces: 1, outputFaceBlendshapes: true, outputFacialTransformationMatrixes: true,
+    });
+  }
+  T.ready = () => (lm ? Promise.resolve() : (loading || (loading = load().catch((e) => { loading = null; throw e; }))));
+
+  /* ----- one detection ----- */
+  function read(res, now) {
+    const b = res.faceBlendshapes, mx = res.facialTransformationMatrixes;
+    if (!(b && b.length && mx && mx.length)) return null;
+    const bs = {}; for (const c of b[0].categories) bs[c.categoryName] = c.score;
+    return { bs, m: mx[0].data, lmk: res.faceLandmarks && res.faceLandmarks[0], v: solver.solve(bs, mx[0].data, now / 1000) };
+  }
+  T.detect = (source) => { const now = performance.now(); return read(lm.detectForVideo(source, now), now); };   // for tests
+  function tick() {
+    if (!running) return;
+    const now = performance.now();
+    if (video.readyState < 2 || now - lastRun < 12) return;
+    lastRun = now;
+    let out;
+    try { out = read(lm.detectForVideo(video, now), now); } catch (e) { T.stop(); set('error', '認識中にエラーが起きました（' + (e && e.message || e) + '）'); return; }
+    frames++;
+    if (now - fpsT > 1000) { T.fps = Math.round(frames * 1000 / (now - fpsT)); frames = 0; fpsT = now; if (T.state === 'tracking') set('tracking'); }
+    if (out) {
+      T.last = out; lost = 0;
+      if (out.v) { D.setFace(out.v); if (T.state !== 'tracking') set('tracking'); }
+    } else if (++lost > 10 && T.state !== 'searching') set('searching', '顔が見つかりません。カメラに顔を向けてください');
+  }
+  function loop() { if (running && video.requestVideoFrameCallback) video.requestVideoFrameCallback(() => { tick(); loop(); }); }
+
+  const camError = (e) => {
+    const n = e && e.name;
+    if (n === 'NotAllowedError' || n === 'SecurityError') return 'カメラの使用が許可されませんでした。アドレスバーのカメラ設定から許可してください';
+    if (n === 'NotFoundError' || n === 'OverconstrainedError') return 'カメラが見つかりません。接続を確認してください';
+    if (n === 'NotReadableError' || n === 'AbortError') return 'カメラを開けません。ほかのアプリ（OBS の映像キャプチャデバイスなど）が使っていないか確認してください';
+    return 'カメラを開始できません（' + (e && e.message || e) + '）';
+  };
+  T.start = async function (deviceId) {
+    if (running || T.state === 'loading') return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { set('error', 'このページの開き方ではカメラを使えません。Chrome や Edge で直接開くか、https / localhost の URL で開いてください'); return; }
+    const my = ++gen;
+    set('loading', 'カメラの許可を待っています…');
+    try {
+      const vid = Object.assign({ width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } }, deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' });
+      T.stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: vid });
+    } catch (e) { if (my === gen) set('error', camError(e)); return; }
+    if (my !== gen) { stopStream(); return; }            // stopped while the permission prompt was open
+    video.srcObject = T.stream;
+    try { await video.play(); } catch (e) { /* autoplay of a muted camera stream is normally allowed */ }
+    set('loading', '認識モデルを読み込んでいます…（初回のみ約 18MB）');
+    try { await T.ready(); } catch (e) { if (my === gen) { stopStream(); set('error', '認識モデルを読み込めませんでした。初回はインターネット接続が必要です（' + (e && e.message || e) + '）'); } return; }
+    if (my !== gen) return;
+    running = true; lost = 0; frames = 0; fpsT = performance.now(); solver.reset();
+    set('searching', '顔を探しています…');
+    loop();
+    clearInterval(wd); wd = setInterval(() => { if (running && performance.now() - lastRun > (video.requestVideoFrameCallback ? 130 : 28)) tick(); }, 33);
+  };
+  function stopStream() { if (T.stream) { for (const t of T.stream.getTracks()) t.stop(); T.stream = null; } video.srcObject = null; }
+  T.stop = function () { gen++; running = false; clearInterval(wd); stopStream(); D.clearFace(); set('idle'); };
+  T.running = () => running;
+  T.devices = async () => { try { return (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'videoinput'); } catch (e) { return []; } };
+  return T;
+}
+G.createTracker = createTracker;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* app.js — stage, pointer input, the inspector dock and (stand-alone build) camera tracking */
+(function () {
+'use strict';
+const $ = (s) => document.querySelector(s);
+function el(tag, attrs, kids) {
+  const e = document.createElement(tag);
+  if (attrs) for (const k in attrs) { if (k === 'text') e.textContent = attrs[k]; else if (k === 'cls') e.className = attrs[k]; else e.setAttribute(k, attrs[k]); }
+  if (kids) for (const c of kids) e.appendChild(c);
+  return e;
+}
+const VT = window.BUILD === 'vtuber';          // stand-alone build with camera tracking
+const Q = {};
+try { new URLSearchParams(location.search).forEach((v, k) => { Q[k] = v; }); } catch (e) { /* no query */ }
+const VIEWS = { full: [-60, -40, 1577, 2450], upper: [300, -40, 1320, 1040], face: [490, -30, 1030, 500] };
+const BGS = [['ai', '薄藍'], ['yoru', '夜'], ['kinari', '生成り'], ['green', '緑'], ['check', '市松']];
+if (VT) BGS.splice(4, 0, ['magenta', 'マゼンタ'], ['blue', '青'], ['none', '透過']);
+const PARTS = [
+  ['髪', ['hairBack', 'hairSideR', 'bangMain', 'lockTail', 'bell']],
+  ['前髪だけ', ['hairSideR', 'bangMain']],
+  ['顔', ['earR', 'faceSide', 'faceSideL', 'face', 'nose', 'eyeR', 'eyeL', 'browR', 'browL', 'mouth', 'earring']],
+  ['上半身', ['torso', 'inner', 'topR', 'topL', 'frill', 'piping', 'bowTails', 'bow', 'strings']],
+  ['腕', ['fingersR', 'thumbR', 'armR', 'gloveR', 'fingersL', 'thumbL', 'armL', 'gloveL', 'bangle']],
+  ['腰布', ['skirtShadow', 'skirtFlap', 'skirt']],
+  ['下半身', ['hips', 'shorts', 'thighL', 'bootL', 'thighR', 'bootR', 'ribbonTails', 'ribbonLoop']],
+  ['相棒', ['creaBack', 'tailBack', 'tailFront', 'creaFringe', 'creaFront', 'creaPaw', 'creaHead', 'creaMarks', 'creaEyeR', 'creaEyeL', 'creaMouth']],
+];
+const AUTOS = [['track', '視線追従'], ['blink', 'まばたき'], ['breath', '呼吸'], ['idle', 'ゆらぎ'], ['phys', '物理演算'], ['talk', 'おしゃべり']];
+const STORE = VT ? 'aigami-vtuber' : 'aigami-rig';
+
+function start(saved) {
+  const M = buildModel(), D = createDriver(M), P = M.P, Rig = window.Rig;
+  const UI = { view: 'full', bg: 'ai', rig: false, tab: VT ? 'live' : 'play', hide: {}, mirror: true, head: 1, blink: 0, mouth: 1, sil: false, silColor: 'black', revStyle: 'fade', revDur: 2 };
+  const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let st = saved && saved.UI ? saved : null;
+  if (!st) { try { st = JSON.parse(localStorage.getItem(STORE) || 'null'); } catch (e) { st = null; } }
+  if (st && st.UI) {
+    for (const k of ['view', 'bg', 'rig', 'tab', 'mirror', 'head', 'blink', 'mouth', 'sil', 'silColor', 'revStyle', 'revDur']) if (st.UI[k] != null) UI[k] = st.UI[k];
+    if (st.UI.hide) UI.hide = st.UI.hide;
+    if (st.S) for (const k in D.S) if (st.S[k] != null) D.S[k] = st.S[k];
+    if (st.expr) D.setExpr(st.expr);
+  } else if (calm) { D.S.idle = false; D.S.wind = 0.2; }
+  // the address can preset the stream look: ?bg=green&view=upper&stream=1&cam=1&mirror=0
+  const inObs = VT && !!window.obsstudio;
+  if (VT) {
+    if (Q.bg) UI.bg = Q.bg; else if (inObs) UI.bg = 'none';
+    if (Q.view) UI.view = Q.view;
+    if (Q.mirror === '0') UI.mirror = false;
+    if (Q.sil === '1') UI.sil = true; else if (Q.sil === '0') UI.sil = false;
+  } else UI.sil = false;
+  if (!VIEWS[UI.view]) UI.view = 'full';
+  if (!BGS.some((b) => b[0] === UI.bg)) UI.bg = 'ai';
+  const snap = () => ({ UI, S: D.S, expr: D.expr });
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(snap())); } catch (e) { /* storage may be unavailable */ } };
+  const hot = window.claude && window.claude.hot;
+  if (hot && hot.snapshot) hot.snapshot(snap);
+
+  /* ---------- stage ---------- */
+  const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d');
+  let W = 1, H = 1, dpr = 1, sc = 1, ox = 0, oy = 0;
+  const cur = VIEWS[UI.view].slice();
+  function resize() {
+    const r = stage.getBoundingClientRect();
+    W = Math.max(1, r.width); H = Math.max(1, r.height); dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  }
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(stage); else window.addEventListener('resize', resize);
+  resize();
+  const toModel = (e) => { const r = stage.getBoundingClientRect(); return [(e.clientX - r.left - ox) / sc, (e.clientY - r.top - oy) / sc]; };
+  let down = null;
+  stage.addEventListener('pointermove', (e) => { const m = toModel(e); D.pointer(m[0], m[1], true); });
+  stage.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') D.pointer(0, 0, false); });
+  stage.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; down = { x: e.clientX, y: e.clientY, t: performance.now() }; const m = toModel(e); D.pointer(m[0], m[1], true); });
+  stage.addEventListener('pointerup', (e) => {
+    if (!down) return;
+    const ok = Math.hypot(e.clientX - down.x, e.clientY - down.y) < 12 && performance.now() - down.t < 500; down = null;
+    if (!ok) return;
+    const m = toModel(e), c = M.point('crea', 470, 440), h = M.point('head', 758, 200);
+    if (!UI.hide['相棒'] && Math.hypot(m[0] - c[0], m[1] - c[1]) < 155) D.play('pet');
+    else if (Math.hypot(m[0] - h[0], m[1] - h[1]) < 175) D.play('pat');
+    else if (m[0] > 560 && m[0] < 1010 && m[1] > 400 && m[1] < 2400) D.flashExpr('surprise', 1.1);
+  });
+
+  function decor() {
+    if (UI.bg === 'ai' || UI.bg === 'yoru' || UI.bg === 'kinari') {
+      const night = UI.bg === 'yoru';
+      ctx.fillStyle = night ? 'rgba(244,238,206,.93)' : UI.bg === 'kinari' ? 'rgba(255,255,255,.5)' : 'rgba(255,255,255,.55)';
+      ctx.beginPath(); ctx.arc(758, 560, 600, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = night ? 'rgba(244,238,206,.35)' : 'rgba(40,52,130,.16)'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(758, 560, 640, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = night ? 'rgba(0,0,10,.4)' : 'rgba(30,40,110,.17)';
+      ctx.beginPath(); ctx.ellipse(760, 2398, 360, 26, 0, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  /* ---------- silhouette mode and the reveal ----------
+     The model is drawn to a spare canvas and flooded with one colour, keeping its exact
+     outline, so chroma key and transparent backgrounds stay clean while it changes. */
+  const SILC = { black: [0, 0, 0], white: [255, 255, 255] };
+  if (!SILC[UI.silColor]) UI.silColor = 'black';
+  let rev = null, off = null, octx = null, syncSil = () => {};
+  const ease = (x) => x * x * (3 - 2 * x);
+  function silState(now) {
+    if (rev) {
+      const p = (now - rev.t0) / (rev.dur * 1000);
+      if (p >= 1) { rev = null; UI.sil = false; syncSil(); save(); return null; }
+      if (p <= 0) return { k: 1, rgb: SILC[UI.silColor] };
+      const c0 = SILC[UI.silColor];
+      if (rev.style === 'flash') {       // glow to white first, then let the colours through
+        if (p < 0.35) { const u = ease(p / 0.35); return { k: 1, rgb: c0.map((c) => Math.round(c + (255 - c) * u)) }; }
+        return { k: 1 - ease((p - 0.35) / 0.65), rgb: SILC.white };
+      }
+      return { k: 1 - ease(p), rgb: c0 };
+    }
+    return UI.sil ? { k: 1, rgb: SILC[UI.silColor] } : null;
+  }
+  function setSil(on) { rev = null; UI.sil = on; syncSil(); save(); }
+  function reveal() { if (UI.sil && !rev) rev = { t0: performance.now(), dur: Math.max(0.05, UI.revDur), style: UI.revStyle }; return !!rev; }
+  function drawModel(now) {
+    const s = silState(now);
+    if (!s) { M.draw(ctx); return; }
+    if (!off) { off = document.createElement('canvas'); octx = off.getContext('2d'); }
+    if (off.width !== cv.width || off.height !== cv.height) { off.width = cv.width; off.height = cv.height; }
+    octx.setTransform(1, 0, 0, 1, 0, 0); octx.clearRect(0, 0, off.width, off.height);
+    octx.setTransform(sc * dpr, 0, 0, sc * dpr, ox * dpr, oy * dpr);
+    M.draw(octx);
+    octx.setTransform(1, 0, 0, 1, 0, 0);
+    octx.globalCompositeOperation = 'source-atop'; octx.globalAlpha = s.k;
+    octx.fillStyle = 'rgb(' + s.rgb[0] + ',' + s.rgb[1] + ',' + s.rgb[2] + ')'; octx.fillRect(0, 0, off.width, off.height);
+    octx.globalAlpha = 1; octx.globalCompositeOperation = 'source-over';
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(off, 0, 0); ctx.restore();
+  }
+
+  /* ---------- dock: header numbers ---------- */
+  const vis = M.parts.filter((p) => !p.hidden);
+  $('#st-parts').textContent = vis.length;
+  $('#st-verts').textContent = vis.reduce((a, p) => a + p.all.reduce((b, s) => b + s.n, 0), 0);
+  $('#st-params').textContent = Rig.PARAMS.length;
+  $('#st-phys').textContent = Rig.PHYS.length;
+
+  /* ---------- tabs ---------- */
+  const tabs = ['live', 'play', 'params', 'parts'].map((k) => [k, $('#t-' + k), $('#p-' + k)]).filter((t) => t[1] && t[2]);
+  if (!tabs.some((t) => t[0] === UI.tab)) UI.tab = tabs[0][0];
+  function setTab(k) { UI.tab = k; for (const t of tabs) { const on = t[0] === k; t[1].setAttribute('aria-selected', on); t[2].hidden = !on; } save(); }
+  for (const t of tabs) t[1].addEventListener('click', () => setTab(t[0]));
+
+  /* ---------- views and backgrounds ---------- */
+  const viewBtns = Array.prototype.slice.call(document.querySelectorAll('.views button'));
+  function setView(k) { UI.view = k; for (const b of viewBtns) b.setAttribute('aria-pressed', b.dataset.view === k); save(); }
+  for (const b of viewBtns) b.addEventListener('click', () => setView(b.dataset.view));
+  const bgBtns = BGS.map((b) => { const e = el('button', { type: 'button', text: b[1] }); e.addEventListener('click', () => setBg(b[0])); $('#bgs').appendChild(e); return [b[0], e]; });
+  function setBg(k) {
+    UI.bg = k; stage.className = 'stage bg-' + k; document.documentElement.classList.toggle('clear', k === 'none');
+    for (const b of bgBtns) b[1].setAttribute('aria-pressed', b[0] === k); save();
+  }
+
+  /* ---------- expressions and motions ---------- */
+  const exBtns = Object.keys(D.EXPR).map((k) => { const e = el('button', { type: 'button', text: D.EXPR[k].label }); e.addEventListener('click', () => { D.setExpr(k); syncExpr(); save(); }); $('#exprs').appendChild(e); return [k, e]; });
+  function syncExpr() { for (const b of exBtns) b[1].setAttribute('aria-pressed', b[0] === D.expr); }
+  for (const k of Object.keys(D.MOTION)) { const e = el('button', { type: 'button', text: D.MOTION[k].label }); e.addEventListener('click', () => D.play(k)); $('#motions').appendChild(e); }
+
+  /* ---------- switches ---------- */
+  function sw(host, id, label, get, set) {
+    const inp = el('input', { type: 'checkbox', id });
+    inp.checked = get(); inp.addEventListener('change', () => { set(inp.checked); save(); });
+    host.appendChild(el('label', { cls: 'sw', for: id }, [inp, el('span', { text: label })]));
+    return inp;
+  }
+  for (const a of AUTOS) sw($('#autos'), 'au-' + a[0], a[1], () => D.S[a[0]], (v) => { D.S[a[0]] = v; if (a[0] === 'phys' && v) M.phys.reset(); });
+  const wind = $('#wind'); wind.value = D.S.wind; wind.addEventListener('input', () => { D.S.wind = +wind.value; save(); });
+  function applyHide() { const off = {}; for (const g of PARTS) if (UI.hide[g[0]]) for (const id of g[1]) off[id] = true; for (const g of PARTS) for (const id of g[1]) M.byId[id].hidden = !!off[id]; }
+  PARTS.forEach((g, i) => sw($('#parts'), 'pt-' + i, g[0], () => !UI.hide[g[0]], (v) => { UI.hide[g[0]] = !v; applyHide(); }));
+  sw($('#rigsw'), 'rig-on', '頂点と回転軸を表示', () => UI.rig, (v) => { UI.rig = v; });
+
+  /* ---------- parameter sliders ---------- */
+  const rows = [], groups = {};
+  const fmt = (v, p) => (p[3] - p[2] > 5 ? v.toFixed(1) : v.toFixed(2));
+  for (const p of Rig.PARAMS) {
+    const id = p[0], gname = p[5];
+    if (!groups[gname]) { groups[gname] = el('div', { cls: 'group' }, [el('h2', { text: gname })]); $('#plist').appendChild(groups[gname]); }
+    const inp = el('input', { type: 'range', id: 'pr-' + id, min: p[2], max: p[3], step: (p[3] - p[2]) / 200, value: p[4] });
+    const out = el('output', { for: 'pr-' + id, text: '0' });
+    const rs = el('button', { type: 'button', cls: 'rs', title: '自動に戻す', 'aria-label': p[1] + ' を自動に戻す', text: '↺' });
+    const row = el('div', { cls: 'prow' }, [el('label', { for: 'pr-' + id }, [el('span', { text: p[1] }), el('small', { text: 'Param' + id })]), inp, out, rs]);
+    inp.addEventListener('input', () => { D.lock[id] = +inp.value; row.classList.add('locked'); out.textContent = fmt(+inp.value, p); });
+    rs.addEventListener('click', () => { delete D.lock[id]; row.classList.remove('locked'); });
+    groups[gname].appendChild(row);
+    rows.push({ id, p, inp, out, row });
+  }
+  $('#unlock').addEventListener('click', () => { D.reset(); for (const r of rows) r.row.classList.remove('locked'); });
+  function syncParams() {
+    if (UI.tab !== 'params') return;
+    for (const r of rows) { if (r.id in D.lock) continue; const v = P[r.id]; r.inp.value = v; r.out.textContent = fmt(v, r.p); }
+  }
+
+  /* ---------- camera tracking and stream mode (stand-alone build) ---------- */
+  let TR = null, toast = () => {};
+  if (VT) {
+    TR = createTracker(D, { delegate: Q.delegate });
+    const cfg = TR.solver.cfg;
+    cfg.mirror = UI.mirror; cfg.head = UI.head; cfg.blink = UI.blink; cfg.mouth = UI.mouth;
+    const btn = $('#cam-toggle'), stEl = $('#cam-status'), sel = $('#cam-device');
+    let listed = false;
+    async function fillDevices() {
+      if (listed) return; listed = true;
+      const list = await TR.devices(), curId = TR.stream && TR.stream.getVideoTracks()[0] && TR.stream.getVideoTracks()[0].getSettings().deviceId;
+      sel.textContent = '';
+      list.forEach((d, i) => { const o = el('option', { value: d.deviceId, text: d.label || 'カメラ ' + (i + 1) }); if (d.deviceId === curId) o.selected = true; sel.appendChild(o); });
+      if (!list.length) sel.appendChild(el('option', { value: '', text: '既定のカメラ' }));
+    }
+    TR.onchange = () => {
+      const s = TR.state;
+      stEl.dataset.state = s;
+      stEl.lastElementChild.textContent = s === 'tracking' ? '追跡中 ' + (TR.fps || '--') + ' fps' : s === 'idle' ? '停止中' : TR.msg;
+      btn.textContent = s === 'idle' || s === 'error' ? 'カメラを開始' : 'カメラを停止';
+      if (s === 'searching' || s === 'tracking') fillDevices(); else if (s === 'idle') listed = false;
+      // with the panel hidden, problems still have to be visible somewhere
+      if (s === 'error' && document.body.classList.contains('stream')) toast(inObs && !navigator.mediaDevices ? 'OBS では URL 欄に file:/// で指定し、--enable-media-stream 付きで起動してください' : TR.msg, 9000);
+    };
+    btn.addEventListener('click', () => { if (TR.state === 'idle' || TR.state === 'error') TR.start(sel.value || undefined); else TR.stop(); });
+    sel.addEventListener('change', () => { if (TR.state !== 'idle' && TR.state !== 'error') { TR.stop(); listed = true; TR.start(sel.value || undefined); } });
+    const mirSw = sw($('#camsw'), 'cam-mirror', '鏡のように動かす', () => UI.mirror, (v) => { UI.mirror = cfg.mirror = v; });
+    $('#cam-cal').addEventListener('click', () => { TR.solver.calibrate(); toast('いまの姿勢を正面にしました'); });
+    for (const k of ['head', 'blink', 'mouth']) { const s = $('#tu-' + k); s.value = UI[k]; s.addEventListener('input', () => { UI[k] = cfg[k] = +s.value; save(); }); }
+    // the background chooser lives on this tab in the stand-alone build
+    $('#bg-slot').replaceWith($('#bgs').closest('.group'));
+    $('#bg-note').textContent = '緑で服の色まで抜けるときはマゼンタを使ってください。「透過」は OBS のブラウザソース用です。';
+
+    // silhouette controls
+    const silSw = sw($('#silsw'), 'sil-on', 'シルエットで表示', () => UI.sil, (v) => { rev = null; UI.sil = v; });
+    syncSil = () => { silSw.checked = UI.sil; };
+    const chipSet = (host, items, get, set) => {
+      const bs = items.map((it) => { const e = el('button', { type: 'button', text: it[1] }); e.addEventListener('click', () => { set(it[0]); upd(); save(); }); host.appendChild(e); return [it[0], e]; });
+      const upd = () => { for (const b of bs) b[1].setAttribute('aria-pressed', b[0] === get()); };
+      upd();
+    };
+    chipSet($('#sil-colors'), [['black', '黒'], ['white', '白']], () => UI.silColor, (v) => { UI.silColor = v; });
+    chipSet($('#sil-styles'), [['fade', 'フェード'], ['flash', '光ってから現れる']], () => UI.revStyle, (v) => { UI.revStyle = v; });
+    const durEl = $('#sil-dur'), durL = $('#sil-dur-l');
+    const durShow = () => { durL.textContent = 'かける時間 ' + (+UI.revDur).toFixed(1) + ' 秒'; };
+    durEl.value = UI.revDur; durShow(); durEl.addEventListener('input', () => { UI.revDur = +durEl.value; durShow(); save(); });
+    $('#sil-reveal').addEventListener('click', () => { if (!reveal()) toast('先に「シルエットで表示」をオンにしてください'); });
+
+    const toastEl = $('#toast'); let toastT = 0;
+    toast = (msg, ms) => { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), ms || 2600); };
+    const setStream = (on) => { document.body.classList.toggle('stream', on); if (on) toast('H キーか Esc キーで操作パネルに戻ります'); };
+    $('#go-stream').addEventListener('click', () => setStream(true));
+    $('#unstream').addEventListener('click', () => setStream(false));
+    window.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.target, tag = t && t.tagName;
+      if (tag === 'SELECT' || tag === 'TEXTAREA' || (tag === 'INPUT' && t.type === 'text')) return;
+      const k = e.key.toLowerCase();
+      if (k === 'h') setStream(!document.body.classList.contains('stream'));
+      else if (k === 'escape') setStream(false);
+      else if (k === 'c') { TR.solver.calibrate(); toast('いまの姿勢を正面にしました'); }
+      else if (k === 'm') { mirSw.checked = !mirSw.checked; mirSw.dispatchEvent(new Event('change')); }
+      else if (k === 's') setSil(!UI.sil);
+      else if (k === 'r') { if (!reveal() && !document.body.classList.contains('stream')) toast('先に「シルエットで表示」をオンにしてください'); }
+      else if (k === 'v') { const ks = Object.keys(VIEWS); setView(ks[(ks.indexOf(UI.view) + 1) % ks.length]); }
+      else if (k >= '1' && k <= '7') { const key = Object.keys(D.EXPR)[+k - 1]; if (key) { D.setExpr(key); syncExpr(); save(); } }
+    });
+    if (Q.stream === '1' || inObs) document.body.classList.add('stream');
+    if (Q.cam === '1' || (inObs && Q.cam !== '0')) TR.start();          // inside OBS nobody is there to press the button
+  }
+
+  setTab(UI.tab); setView(UI.view); setBg(UI.bg); syncExpr(); applyHide();
+
+  /* ---------- main loop ---------- */
+  D.warm(1.5);
+  let last = performance.now(), lastSync = 0;
+  function frame(now) {
+    const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now;
+    D.step(dt); M.update(D.T);
+    const tg = VIEWS[UI.view], k = calm ? 1 : 1 - Math.exp(-dt * 6.5);
+    for (let i = 0; i < 4; i++) cur[i] += (tg[i] - cur[i]) * k;
+    sc = Math.min(W / (cur[2] - cur[0]), H / (cur[3] - cur[1]));
+    ox = (W - (cur[2] - cur[0]) * sc) / 2 - cur[0] * sc; oy = (H - (cur[3] - cur[1]) * sc) / 2 - cur[1] * sc;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.setTransform(sc * dpr, 0, 0, sc * dpr, ox * dpr, oy * dpr);
+    decor(); drawModel(now);
+    if (UI.rig) M.drawRig(ctx, sc * dpr);
+    if (now - lastSync > 90) { syncParams(); lastSync = now; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.__rig = { M, D, UI, TR, setSil, reveal };
+}
+const hot = window.claude && window.claude.hot;
+if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
+})();
+
+</script>
+
+</body>
+</html>

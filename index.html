@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鵺宮ミヤベンチマーク</title>
+<meta name="description" content="鵺宮ミヤの立ち絵ラフ1枚から、各LLMが作ったVTuberモデルを比べるベンチマーク。">
+<meta property="og:title" content="鵺宮ミヤベンチマーク">
+<meta property="og:description" content="ラフ1枚 → VTuberモデル">
+<meta property="og:image" content="assets/miya-rough.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#27307a; --ink:#111; --mute:#6b6f85;
+  --rainbow:linear-gradient(90deg,#ff1744 0%,#ff00d4 14%,#7a00ff 28%,#0029ff 40%,#00e1ff 54%,#00ff3c 66%,#f5ff00 78%,#ff9800 89%,#ff1744 100%);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"DotGothic16",ui-monospace,monospace;font-weight:400;color:var(--ink);line-height:1.6;min-height:100vh;background:var(--rainbow) fixed}
+/* 白い集中線（中央はあける） */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,.95) 0deg 1.6deg,transparent 1.6deg 6deg,rgba(255,255,255,.95) 6deg 7deg,transparent 7deg 11.5deg);
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 22%,#000 62%);mask-image:radial-gradient(circle at 50% 50%,transparent 22%,#000 62%)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+/* 白文字＋黒フチ */
+.outline{color:#fff;-webkit-text-stroke:4px #000;paint-order:stroke fill}
+h1.outline{-webkit-text-stroke:9px #000}
+
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:36px;padding-bottom:8px}
+h1{margin:0;font-weight:400;font-size:clamp(1.8rem,4.6vw,3rem);line-height:1.25}
+.links{flex:none;display:flex;gap:12px}
+.icon{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#fff;border:3px solid #000;transition:transform .2s}
+.icon:hover{transform:translateY(-2px)}
+.icon svg{width:26px;height:26px}
+
+main.wrap{padding-top:32px;padding-bottom:56px;display:grid;grid-template-columns:260px 1fr;gap:40px;align-items:start}
+@media (max-width:780px){main.wrap{grid-template-columns:1fr}}
+.label{font-size:1rem;letter-spacing:.15em;margin:0 0 10px}
+
+.source{position:sticky;top:24px}
+@media (max-width:780px){.source{position:static;max-width:240px}}
+.source img{width:100%;height:auto;display:block;background:#fff;border:3px solid #000;border-radius:12px;padding:12px}
+
+.cards{display:grid;grid-template-columns:1fr;gap:28px}
+.card{display:block;background:#fff;border:3px solid #000;border-radius:12px;overflow:hidden;transition:transform .2s,box-shadow .2s;box-shadow:6px 6px 0 #000}
+.card:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 #000}
+.card img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:left top;display:block;background:#eef0f7;border-bottom:3px solid #000}
+.card div{padding:14px 18px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.card b{font-weight:400;font-size:1.1rem;color:var(--indigo)}
+.card time{font-size:.85rem;color:var(--mute)}
+
+footer{text-align:center;font-size:.85rem;padding:0 24px 32px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1 class="outline">鵺宮ミヤベンチマーク</h1>
+    <nav class="links">
+    <a class="icon" href="https://www.youtube.com/@ymymy83838" target="_blank" rel="noopener" aria-label="YouTube チャンネル" title="YouTube"><svg viewBox="0 -4 28 28" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#f00"/><path d="M11 5.5v9l8-4.5z" fill="#fff"/></svg></a>
+    <a class="icon" href="https://github.com/ymymy83838/ymymy-llm-benchmark" target="_blank" rel="noopener" aria-label="GitHub リポジトリ" title="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="#000" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <aside class="source">
+    <p class="label outline">INPUT</p>
+    <a href="%E9%B5%BA%E5%AE%AE%E3%83%9F%E3%83%A4_%E7%AB%8B%E3%81%A1%E7%B5%B5%E3%83%A9%E3%83%95.png" target="_blank" rel="noopener" title="原寸で表示">
+      <img src="assets/miya-rough.webp" width="900" height="1429" alt="鵺宮ミヤの立ち絵ラフ">
+    </a>
+  </aside>
+
+  <section>
+    <p class="label outline">OUTPUT</p>
+    <div class="cards" id="cards"></div>
+  </section>
+</main>
+
+<footer class="outline">© ymymy83838</footer>
+
+<script>
+// モデルを追加するときは、フォルダを作ってここに1件足す（released の新しい順に自動で並ぶ）
+const MODELS = [
+  { model: "Claude Opus 5.5",  released: "2026-09-22", url: "opus5.5/index.html",          shot: "assets/shot-opus5.5.webp" },
+  { model: "Claude Fable 5.2", released: "2026-11-09", url: "fable5.2/aigami-vtuber.html", shot: "assets/shot-fable5.2.webp" },
+];
+
+const root = document.getElementById("cards");
+for (const m of [...MODELS].sort((a, b) => b.released.localeCompare(a.released))) {
+  const a = document.createElement("a");
+  a.className = "card";
+  a.href = m.url;
+  a.innerHTML = `<img loading="lazy" alt=""><div><b></b><time></time></div>`;
+  a.querySelector("img").src = m.shot;
+  a.querySelector("img").alt = `${m.model} の出力`;
+  a.querySelector("b").textContent = m.model;
+  const t = a.querySelector("time");
+  t.dateTime = m.released;
+  t.textContent = m.released.replaceAll("-", ".");
+  root.appendChild(a);
+}
+</script>
+</body>
+</html>
